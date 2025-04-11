@@ -1,0 +1,30 @@
+<p-drawer header="Search Concepts" position="right" [(visible)]="visible" [blockScroll]="true" styleClass="w-full md:w-25rem xl:w-30rem">
+    <div class="flex flex-wrap justify-center align-items-center my-4">
+        <p-floatlabel variant="on">
+            <input pInputText id="on_label" [(ngModel)]="inputValue" (ngModelChange)="onInputValueChange($event)" autocomplete="off" class="w-19rem custom-input"/>
+            <label for="on_label" class="custom-label">Search</label>
+        </p-floatlabel>
+        <p-button variant="text" severity="secondary" (click)="onInputValueChange('')" size="small" [rounded]="true" icon="pi pi-times"/>
+    </div>
+    <div class="flex flex-wrap justify-center align-items-center gap-3">
+        <div class="flex items-center">
+            <p-checkbox inputId="searchCode" [(ngModel)]="searchBooleans.searchCode" (ngModelChange)="updateSearchSettings()" [binary]="true" class="custom-checkbox"/>
+            <label for="searchCode" class="ml-2"> Code </label>
+        </div>
+        <div class="flex items-center">
+            <p-checkbox inputId="searchName" [(ngModel)]="searchBooleans.searchName" (ngModelChange)="updateSearchSettings()" [binary]="true" class="custom-checkbox"/>
+            <label for="searchName" class="ml-2"> Name </label>
+        </div>
+        <div class="flex items-center">
+            <p-checkbox inputId="searchDescription" [(ngModel)]="searchBooleans.searchDescription" (ngModelChange)="updateSearchSettings()" [binary]="true" class="custom-checkbox"/>
+            <label for="searchDescription" class="ml-2"> Description </label>
+        </div>
+        <div class="flex items-center">
+            <p-checkbox inputId="searchSkills" [(ngModel)]="searchBooleans.searchSkills" (ngModelChange)="updateSearchSettings()" [binary]="true" class="custom-checkbox"/>
+            <label for="searchSkills" class="ml-2"> Skills </label>
+        </div>
+    </div>
+    <p-divider />
+    <searchResults [suggestions]="nodeSuggestions" [searchValue]="inputValue" [highlightDescription]="searchBooleans.searchDescription" (codSelectedChange)="onCodSelectedChange($event)"/>
+</p-drawer>
+<p-button variant="text" (click)="visible = true" icon="pi pi-search" [label]="isMobile ? '' : 'Search'" class="absolute top-70px right-0 m-4 custom-button"/>

@@ -1,0 +1,15 @@
+.dt-link {
+    color: var(--secondary-color);
+}
+  
+.dt-link:hover {
+    color: var(--hover-color);
+}
+
+a {
+    color: var(--secondary-color);
+}
+  
+a:hover {
+    color: var(--hover-color);
+}

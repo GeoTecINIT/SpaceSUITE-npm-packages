@@ -1,0 +1,73 @@
+.header {
+    background-color: white;
+    color: var(--primary-color);
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+.header::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 2rem; /* Ajusta este valor para cortar la línea en el lado izquierdo */
+    right: 2rem; /* Ajusta este valor para cortar la línea en el lado derecho */
+    height: 1px; /* Grosor de la línea */
+    background-color: rgba(0, 0, 0, 0.1); /* Color de la línea */
+}
+
+.header a{
+    color: var(--primary-color);
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.header a:hover {
+    color: var(--hover-color);
+}
+
+.logo {
+    width: auto;
+    height: 50px;
+}
+
+.custom-header-button {
+    --p-button-primary-background: var(--secondary-color);
+    --p-button-primary-border-color: var(--secondary-color);
+    --p-button-primary-hover-background: var(--hover-color);
+    --p-button-primary-hover-border-color: var(--hover-color);
+    --p-button-primary-active-background: color-mix(in srgb, var(--hover-color) 80%, black 20%);
+    --p-button-primary-active-border-color: color-mix(in srgb, var(--hover-color) 90%, black 10%);
+}
+
+.header-option:hover {
+    color: var(--hover-color);
+    cursor: pointer;
+}
+
+.custom-p-tieredmenu {
+    --p-tieredmenu-item-icon-color: var(--primary-color);
+    --p-tieredmenu-item-icon-active-color: var(--hover-color);
+    --p-tieredmenu-item-icon-focus-color: var(--hover-color);
+    --p-tieredmenu-item-color: var(--primary-color);
+    --p-tieredmenu-item-active-color: var(--hover-color);
+    --p-tieredmenu-item-focus-color: var(--hover-color);
+}
+
+.custom-p-avatar {
+    color: var(--primary-color);
+    cursor: pointer;
+}
+
+.custom-p-avatar:hover {
+    color: var(--hover-color);
+}
+
+.fixed-text {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    max-width: 20%;
+}

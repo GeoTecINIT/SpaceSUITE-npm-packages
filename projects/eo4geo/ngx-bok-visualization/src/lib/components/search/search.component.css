@@ -1,0 +1,26 @@
+.custom-checkbox {
+    --p-checkbox-checked-background: var(--secondary-color);
+    --p-checkbox-checked-border-color: var(--secondary-color);
+    --p-checkbox-checked-hover-background: var(--hover-color);
+    --p-checkbox-checked-hover-border-color: var(--hover-color);
+    --p-checkbox-checked-focus-border-color: var(--secondary-color);  
+    --p-checkbox-focus-ring-color: var(--secondary-color);
+}
+
+.custom-input {
+    --p-inputtext-focus-border-color: var(--hover-color);
+}
+
+.custom-label {
+    --p-floatlabel-focus-color: var(--hover-color);
+}
+
+.custom-button {
+    --p-button-text-primary-color: var(--secondary-color);
+    --p-button-text-primary-hover-background: var(--p-button-text-secondary-hover-background);
+    --p-button-text-primary-active-background: var(--p-button-text-secondary-active-background);
+}
+
+.custom-button:hover {
+    --p-button-text-primary-color: var(--hover-color);
+}

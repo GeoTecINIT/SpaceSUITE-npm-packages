@@ -1,0 +1,96 @@
+.custom-button {
+    --p-button-primary-background: var(--secondary-color);
+    --p-button-primary-border-color: var(--secondary-color);
+    --p-button-primary-hover-background: var(--hover-color);
+    --p-button-primary-hover-border-color: var(--hover-color);
+    --p-button-primary-active-background: color-mix(in srgb, var(--hover-color) 80%, black 20%);
+    --p-button-primary-active-border-color: color-mix(in srgb, var(--hover-color) 90%, black 10%);
+}
+
+.delete-button {
+    --p-button-primary-background: var(--danger-color);
+    --p-button-primary-border-color: var(--danger-color);
+    --p-button-primary-hover-background: color-mix(in srgb, var(--danger-color) 90%, black 10%);
+    --p-button-primary-hover-border-color: color-mix(in srgb, var(--danger-color) 90%, black 10%);
+    --p-button-primary-active-background: color-mix(in srgb, var(--danger-color) 70%, black 30%);
+    --p-button-primary-active-border-color: color-mix(in srgb, var(--danger-color) 80%, black 20%);
+}
+
+.trash-button {
+    --p-button-text-primary-color: var(--danger-color);
+    --p-button-text-primary-hover-background: color-mix(in srgb, var(--danger-color) 10%, rgba(255, 255, 255, 0) 90%);
+    --p-button-text-primary-active-background: color-mix(in srgb, var(--danger-color) 20%, rgba(255, 255, 255, 0) 80%);
+}
+
+.custom-toogle {
+    --p-toggleswitch-checked-border-color: var(--secondary-color);
+    --p-toggleswitch-checked-hover-border-color: var(--hover-color);
+    --p-toggleswitch-checked-background: var(--secondary-color);
+    --p-toggleswitch-checked-hover-background: var(--hover-color);
+}
+
+.custom-acordion {
+    --p-accordion-header-color: color-mix(in srgb, var(--primary-color) 60%, rgba(255, 255, 255, 0) 40%);
+    --p-accordion-header-hover-color: var(--hover-color);
+    --p-accordion-header-active-color: var(--primary-color);
+    --p-accordion-content-color: var(--primary-color);
+}
+
+.custom-table {
+    --p-datatable-header-cell-color: var(--primary-color);
+    --p-datatable-row-color: var(--primary-color);
+    --p-paginator-nav-button-color: color-mix(in srgb, var(--primary-color) 60%, rgba(255, 255, 255, 0) 40%);
+    --p-paginator-nav-button-selected-background: color-mix(in srgb, var(--hover-color) 10%, rgba(255, 255, 255, 0) 90%);
+    --p-paginator-nav-button-hover-background: color-mix(in srgb, var(--secondary-color) 10%, rgba(255, 255, 255, 0) 90%);
+}
+
+.custom-input {
+    --p-inputtext-focus-border-color: var(--hover-color);
+    --p-inputtext-hover-border-color: var(--hover-color);
+}
+
+.custom-floatlabel {
+    --p-floatlabel-focus-color: var(--hover-color);
+}
+
+.error-input {
+    --p-inputtext-border-color: var(--danger-color);
+}
+
+.error-floatlabel {
+    --p-floatlabel-color: var(--danger-color);
+}
+
+::ng-deep .p-confirmdialog   {
+    color: var(--primary-color) !important;
+}
+
+::ng-deep .p-confirmdialog .p-confirmdialog-icon   {
+    color: var(--primary-color) !important;
+}
+
+::ng-deep .p-confirmdialog .p-button {
+    --p-button-primary-background: var(--danger-color);
+    --p-button-primary-border-color: var(--danger-color);
+    --p-button-primary-hover-background: color-mix(in srgb, var(--danger-color) 90%, black 10%);
+    --p-button-primary-hover-border-color: color-mix(in srgb, var(--danger-color) 90%, black 10%);
+    --p-button-primary-active-background: color-mix(in srgb, var(--danger-color) 70%, black 30%);
+    --p-button-primary-active-border-color: color-mix(in srgb, var(--danger-color) 80%, black 20%);
+}
+
+.custom-inplace-display {
+    display: block !important;
+    max-width: fit-content;
+    white-space: nowrap;
+    cursor: pointer;
+    color: var(--secondary-color);
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 0.1rem;
+    outline: none;
+}
+
+.custom-inplace-display:hover,
+.custom-inplace-display:focus {
+    color: var(--hover-color);
+}

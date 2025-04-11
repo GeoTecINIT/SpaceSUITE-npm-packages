@@ -1,0 +1,132 @@
+<div>
+    <!-- Permalink -->
+    <p>
+        Permalink: 
+        <a style="text-decoration: none;" [href]="permalink">{{ permalink }}</a>
+    </p>
+
+    <!-- Title -->
+    <h2 id="boktitle" style="margin-bottom: 0px;">
+        [{{ bokNode.nameShort }}] {{ bokNode.name }}
+    </h2>
+
+    <!-- Status -->
+    <div *ngIf="statusText" style="margin-bottom: 1em;">
+        {{ statusText }}
+    </div>
+
+    <!-- Warning for obsolete BoK concept -->
+    <p *ngIf="isAnObsoleteId && currentVersion">
+        <span style="color: var(--danger-color); font-weight: normal;">
+        warning: this is an obsolete BoK concept - this concept is no longer present in 
+        <a 
+            style="color: var(--danger-color); font-weight: normal; cursor: pointer; text-decoration: underline;"
+            (click)="loadOldBokVersion(currentVersion)">
+            the current version of the BoK
+        </a>
+        </span>
+    </p>
+    
+    <!-- Warning for old version -->
+    <p *ngIf="isAnOldVersion && !isAnObsoleteId">
+        <span style="color: var(--warning-color); font-weight: normal;">
+        warning: this is an old version of this BoK concept; see "Versioning" below for more recent version(s)
+        </span>
+    </p>
+
+    <!-- Last Updated -->
+    <small *ngIf="formattedTimestamp">{{ formattedTimestamp }}</small>
+    
+    <!-- Description -->
+    <h3>Description:</h3>
+    <div id="currentDescription" class="hideContent">
+        {{ bokNode.description }}
+    </div>
+
+    <!-- Superconcepts -->
+    <div *ngIf="parentHierarchy.length > 0">
+        <h3>Superconcepts [{{ 1 + bokNode.otherParents.length }}]</h3>
+        <div style="padding-left: 1em;">
+        <dl>
+            <ng-container *ngFor="let parent of parentHierarchy; let i = index">
+            <dt *ngIf="parent === parentHierarchy[0]" class="concept-name dt-link" 
+                style="font-weight: 400; cursor: pointer;"
+                (click)="browseToConcept(parent.nameShort)">
+                <b>-</b> [{{ parent.nameShort }}] {{ parent.name }}
+            </dt>
+            <dd *ngIf="parent !== parentHierarchy[0]"
+                [style.marginLeft.em]="i * 0.8"
+                style="margin-top: 0.25em;">
+                <dl>
+                <dt class="concept-name dt-link" 
+                    style="font-weight: 400; cursor: pointer;"
+                    (click)="browseToConcept(parent.nameShort)">
+                    <b>-</b> [{{ parent.nameShort }}] {{ parent.name }}
+                </dt>
+                </dl>
+            </dd>
+            </ng-container>
+        </dl>
+        </div>
+    </div>
+
+    <!-- Other Superconcepts -->
+    <div *ngFor="let hierarchy of otherParentHierarchies">
+        <div style="margin-top: 1em; padding-left: 1em;">
+        <dl>
+            <ng-container *ngFor="let other of hierarchy; let i = index">
+            <dt *ngIf="other === hierarchy[0]" class="concept-name dt-link" 
+                style="font-weight: 400; cursor: pointer;"
+                (click)="browseToConcept(other.nameShort)">
+                <b>-</b> [{{ other.nameShort }}] {{ other.name }}
+            </dt>
+            <dd *ngIf="other !== hierarchy[0]"
+                [style.marginLeft.px]="i * 8"
+                style="margin-top: 0.25em;">
+                <dl>
+                <dt class="concept-name dt-link" 
+                    style="font-weight: 400; cursor: pointer;"
+                    (click)="browseToConcept(other.nameShort)">
+                    <b>-</b> [{{ other.nameShort }}] {{ other.name }}
+                </dt>
+                </dl>
+            </dd>
+            </ng-container>
+        </dl>
+        </div>
+    </div>
+
+    <!-- Subconcepts -->
+    <list [array]="bokNode.children" [propertyname]="'name'" [propertyname2]="'nameShort'" 
+        [headline]="'Subconcepts'" [isConcept]="true" (codSelectedChange)="browseToConcept($event)"></list>
+
+    <!-- Prerequisites -->
+    <list [array]="bokNode.prerequisites" [propertyname]="'name'" [propertyname2]="'nameShort'" 
+        [headline]="'Prerequisites'" [isConcept]="true" (codSelectedChange)="browseToConcept($event)"></list>
+
+    <!-- postrequisites -->
+    <list [array]="bokNode.postrequisites" [propertyname]="'name'" [propertyname2]="'nameShort'" 
+        [headline]="'Postrequisites'" [isConcept]="true" (codSelectedChange)="browseToConcept($event)"></list>
+
+    <!-- Similar concepts -->
+    <list [array]="bokNode.similarConcepts" [propertyname]="'name'" [propertyname2]="'nameShort'" 
+        [headline]="'Similar concepts'" [isConcept]="true" (codSelectedChange)="browseToConcept($event)"></list>
+
+    <!-- Skills -->
+    <list [array]="bokNode.demonstrableSkills" [propertyname]="'description'" [headline]="'Skills'" [isConcept]="false"></list>
+
+    <!-- Contributors -->
+    <list [array]="bokNode.contributors" [propertyname]="'nameShort'" [propertyname2]="'url'" 
+        [headline]="'Contributors'" [isConcept]="false"></list>
+
+    <!-- Source Documents -->
+    <list [array]="bokNode.sourceDocuments" [propertyname]="'nameShort'" [propertyname2]="'url'" 
+        [headline]="'Source documents'" [isConcept]="false"></list>
+
+    <!-- Versions -->
+    <div *ngIf="showVersions && bokVersion && currentVersion && versionMap">
+        <versions (bokVersionChange)="loadOldBokVersion($event)" [bokVersion]="bokVersion" [currentVersion]="currentVersion" [bokVersions]="versionMap"></versions>
+    </div>
+
+</div>
+  

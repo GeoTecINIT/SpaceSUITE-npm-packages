@@ -1,0 +1,23 @@
+<p-toast class="custom-toast" position="bottom-right"/>
+<div class="flex flex-column align-items-center justify-content-center p-4">
+    <h2>User Profile</h2>
+    <div class="flex gap-4">
+        <p-floatlabel variant="on" class="custom-floatlabel">
+            <p-iconfield>
+                <p-inputicon class="pi pi-envelope" />
+                <input pInputText id="email" [disabled]="true" autocomplete="off" class="w-full max-w-25rem custom-input" [(ngModel)]="email"/>
+            </p-iconfield>
+            <label for="email">Email</label>
+        </p-floatlabel>
+    </div>
+    <div class="flex gap-4 mt-4 mb-4">
+        <p-floatlabel variant="on" class="custom-floatlabel">
+            <p-iconfield>
+                <p-inputicon class="pi pi-user" />
+                <input pInputText id="password" [disabled]="email == ''" autocomplete="off" class="w-full max-w-25rem custom-input" [(ngModel)]="newName"/>
+            </p-iconfield>
+            <label for="password">Name</label>
+        </p-floatlabel>
+    </div>
+    <p-button class="custom-button" label="Update Name" [disabled]="(name == newName || email == '')" (click)="updateName()" />
+</div>

@@ -1,0 +1,41 @@
+<div class="header">
+    <div class="flex align-content-center p-4 mx-4">
+        <a (click)="navigateToMainPage()" class="align-self-center"><img class="logo flex align-items-center justify-content-center" src="assets/images/SpaceSUITE_horizontal_color.png" alt="LogoSpaceSUITE"></a>
+        <div class="hidden xl:flex align-self-center fixed-text">
+            <strong class="text-2xl overflow-hidden white-space-nowrap text-overflow-ellipsis" style="cursor: pointer;" (click)="navigateToMainPage()">
+                {{toolName}}
+            </strong>
+        </div>
+        <div class="flex gap-6 ml-auto">
+            <div class="justify-content-center hidden md:flex" *ngFor="let item of items;">
+                <div class="flex align-items-center justify-content-center gap-2 text-xl font-bold header-option" (click)="subMenu.toggle($event)" *ngIf="item.label != 'Share'; else share">
+                    <i [class]="item.icon"></i>
+                    <div>{{item.label}}</div>
+                    <i *ngIf="item.items" class="pi pi-angle-down"></i>
+                </div>
+                <p-tieredmenu #subMenu [model]="item.items" [breakpoint]="'767px'" class="custom-p-tieredmenu" [popup]="true" />
+                <ng-template #share>
+                    <div class="flex align-items-center justify-content-center gap-3">
+                        <div *ngFor="let social of item.items;">
+                            <a [href]="social.url" target="_blank" class="flex">
+                                <i [class]="social.icon" style="font-size: 1.25rem"></i>
+                            </a>
+                        </div>
+                    </div>
+                </ng-template>
+            </div>
+            <div *ngIf="login" class="hidden md:flex align-items-center justify-content-center">
+                <p-avatar *ngIf="logged; else loginButton" [label]="nameInitial" class="custom-p-avatar" shape="circle" (click)="userMenu.toggle($event)"></p-avatar>
+            </div>
+            <p-tieredmenu #userMenu [model]="userItems" [breakpoint]="'767px'" class="custom-p-tieredmenu" [popup]="true" />
+            <ng-template #loginButton>
+                <p-button class="custom-header-button" size="small" label="Login" aria-label="Login" (onClick)="showLoginModal = !showLoginModal"></p-button>
+            </ng-template>
+        </div>
+        
+        <p-button #menuButton (click)="hideMenu = !hideMenu" class="md:hidden flex align-items-center custom-header-button ml-auto" icon="pi pi-bars" aria-label="Menu"></p-button>
+    </div>
+    <p-tieredmenu #menu [hidden]="hideMenu" [model]="buttonItems" class="md:hidden custom-p-tieredmenu"/>
+</div>
+
+<sessionModal [(visible)]="showLoginModal"></sessionModal>

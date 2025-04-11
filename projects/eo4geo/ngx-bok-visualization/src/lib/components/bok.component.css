@@ -1,0 +1,22 @@
+.card {
+    background-color: #fff;
+    padding: 1rem;
+    box-sizing: border-box;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+}
+
+@media (min-width: 992px) {
+    .card {
+        border-left: 1px solid rgba(0, 0, 0, 0.1);
+    }
+}
+
+.scroll-top {
+    --p-button-primary-background: var(--secondary-color);
+    --p-button-primary-border-color: var(--secondary-color);
+    --p-button-primary-hover-background: var(--hover-color);
+    --p-button-primary-hover-border-color: var(--hover-color);
+}

@@ -1,0 +1,38 @@
+<p-dialog [header]="getHeader()" [modal]="true" [visible]="visible" resizable="false" (visibleChange)="visibleChange.emit($event)" [style]="{color: 'var(--primary-color)'}">
+    <p-message *ngIf="error" severity="error" variant="simple" styleClass="mb-4 white-space-normal" class="error-info">{{error}}</p-message>
+    <div class="flex items-center gap-4 mt-2 mb-1">
+        <p-floatlabel variant="on" [class]="error ? 'custom-floatlabel error-floatlabel' : 'custom-floatlabel'">
+            <p-iconfield>
+                <p-inputicon class="pi pi-user" />
+                <input pInputText id="email" autocomplete="off" [class]="error ? 'custom-input error-input' : 'custom-input'" [(ngModel)]="email"/>
+            </p-iconfield>
+            <label for="email">Email</label>
+        </p-floatlabel>
+    </div>
+    <div *ngIf="!resetpassword" class="flex items-center gap-4 mt-4 mb-1">
+        <p-floatlabel variant="on" [class]="error ? 'custom-floatlabel error-floatlabel' : 'custom-floatlabel'">
+            <p-iconfield>
+                <p-inputicon class="pi pi-lock" />
+                <input pInputText id="password" autocomplete="off" [class]="error ? 'custom-input error-input' : 'custom-input'" [(ngModel)]="password"/>
+            </p-iconfield>
+            <label for="password">Password</label>
+        </p-floatlabel>
+    </div>
+    <div *ngIf="!login" class="flex items-center gap-4 mt-4 mb-1">
+        <p-floatlabel variant="on" [class]="error ? 'custom-floatlabel error-floatlabel' : 'custom-floatlabel'">
+            <p-iconfield>
+                <p-inputicon class="pi pi-lock" />
+                <input pInputText id="rPassword" autocomplete="off" [class]="error ? 'custom-input error-input' : 'custom-input'" [(ngModel)]="repeatPassword"/>
+            </p-iconfield>
+            <label for="rPassword">Repeat Password</label>
+        </p-floatlabel>
+    </div>
+    <a *ngIf="login && !resetpassword" class="inline-flex ml-2 text-sm" (click)="resetpassword = !resetpassword; error = null;">Forgot Password?</a>
+    <div class="flex align-items-center justify-content-between gap-2 mt-4">
+        <div class="flex justify-end gap-2">
+            <p-button class="custom-button" [label]="getHeader()" (click)="clickMainButton()" />
+            <p-button severity="secondary" class="custom-secondary-button" [label]="getSwitchLabel()" (click)="clickSwitchButton()" />
+        </div>
+        <p-button *ngIf="!resetpassword" class="custom-button" icon="pi pi-google" label="Google" (click)="loginWithGoogle()" />
+    </div>
+</p-dialog>

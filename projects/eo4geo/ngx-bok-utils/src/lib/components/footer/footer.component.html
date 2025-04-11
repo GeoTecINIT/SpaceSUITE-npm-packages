@@ -1,0 +1,36 @@
+<div class="footer">
+    <p-toolbar [style]="{'color': 'white', 'background': 'none', 'border': '0px', 'gap': '3rem'}">
+        <ng-template #start>
+            <div class="flex flex-column align-items-center gap-1">
+                <div class="inline">
+                    <a href="http://www.eo4geo.eu/" target="_blank"><img class="logo" src="assets/images/EO4GEO_LOGO_WHITE.png" alt="LogoEO4GEO"></a>
+                    <a href="https://www.spacesuite-project.eu/" target="_blank"><img class="logo" src="assets/images/SpaceSUITE_horizontal_white.png" alt="LogoSpaceSUITE"></a>
+                </div>
+                <span style="font-size: x-small;">All tools were developed by <a href="https://geotec.uji.es/" target="_blank">GEOTEC</a></span>
+            </div>
+        </ng-template>
+        <ng-template #center>
+            <div style="font-size: smaller;" class="flex flex-wrap gap-1">
+                <span>© 2025 spaceSUITE</span>
+                <span class="link-separator">
+                    | <a (click)="clickUserManual()">User Manual</a>
+                </span>
+                <span class="link-separator">
+                    | <a (click)="clickReleaseNotes()">Release Notes</a>
+                </span>
+                <span class="link-separator">
+                    | <a href="mailto:eo4geo@gmail.com?subject=EO4GEO%20Tools%20Contact">Contact</a>
+                </span>
+                <span class="link-separator">
+                    | <a href="https://www.spacesuite-project.eu/privacy-policy/" target="_blank">Privacy Policy</a>
+                </span>
+            </div>
+        </ng-template>
+        <ng-template #end>
+            <div class="flex flex-column align-items-center gap-1 max-w-20rem">
+                <img class="logo" src="assets/images/EU_Funding.png" alt="LogoEU">
+                <span class="white-space-normal" style="font-size: xx-small;">Views and opinions expressed are however those of the author(s) only and do not necessarily reflect those of the European Union or the European Education and Culture Executive Agency (EACEA). Neither the European Union nor EACEA can be held responsible for them.</span>
+            </div>
+        </ng-template>
+    </p-toolbar>
+</div>

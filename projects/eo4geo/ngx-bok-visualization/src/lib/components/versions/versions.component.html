@@ -1,0 +1,29 @@
+<div *ngIf="bokVersions && bokVersion && currentVersion">
+    <h3>Versioning</h3>
+    <div *ngIf="bokVersions.size > 0">
+        <div style="padding-left: 1em;">
+        <dl>
+            <ng-container *ngFor="let version of bokVersions | keyvalue : descendingOrder">
+            <dt *ngIf="version.key == currentVersion && version.key != bokVersion" class="concept-name dt-link" 
+                style="font-weight: 400; cursor: pointer; margin-top: 0.25em;"
+                (click)="loadOldBokVersion(version.key)">
+                <b>-</b> Version {{ currentVersion[1] }}.0 ({{version.value}}) (Current BoK Version)
+            </dt>
+            <dt *ngIf="version.key == currentVersion && version.key == bokVersion" class="concept-name" 
+                style="font-weight: 800; margin-top: 0.25em; margin-bottom: 1em;">
+                <b>→</b> You are viewing: Version {{ currentVersion[1] }}.0 ({{version.value}}) (Current BoK Version)
+            </dt>
+            <dt *ngIf="version.key != currentVersion && version.key != bokVersion" class="concept-name dt-link" 
+                style="font-weight: 400; cursor: pointer; margin-top: 0.25em;"
+                (click)="loadOldBokVersion(version.key)">
+                <b>-</b> Version {{ version.key[1] }}.0 ({{version.value}})
+            </dt>
+            <dt *ngIf="version.key != currentVersion && version.key == bokVersion" class="concept-name" 
+                style="font-weight: 800; margin-top: 0.25em; margin-bottom: 1em;">
+                <b>→</b> You are viewing: Version {{ version.key[1] }}.0 ({{version.value}})
+            </dt>
+            </ng-container>
+        </dl>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,42 @@
+.custom-input {
+    --p-inputtext-focus-border-color: var(--hover-color);
+    --p-inputtext-hover-border-color: var(--hover-color);
+}
+
+.custom-floatlabel {
+    --p-floatlabel-focus-color: var(--hover-color);
+}
+
+.custom-secondary-button {
+    --p-button-secondary-hover-color: var(--primary-color);
+    --p-button-secondary-active-color: var(--primary-color);
+}
+
+.custom-button {
+    --p-button-primary-background: var(--secondary-color);
+    --p-button-primary-border-color: var(--secondary-color);
+    --p-button-primary-hover-background: var(--hover-color);
+    --p-button-primary-hover-border-color: var(--hover-color);
+    --p-button-primary-active-background: color-mix(in srgb, var(--hover-color) 80%, black 20%);
+    --p-button-primary-active-border-color: color-mix(in srgb, var(--hover-color) 90%, black 10%);
+}
+
+a {
+    cursor: pointer;
+}
+
+a:hover {
+    color: var(--hover-color);
+}
+
+.error-info {
+    --p-message-error-simple-color: var(--danger-color);
+}
+
+.error-input {
+    --p-inputtext-border-color: var(--danger-color);
+}
+
+.error-floatlabel {
+    --p-floatlabel-color: var(--danger-color);
+}

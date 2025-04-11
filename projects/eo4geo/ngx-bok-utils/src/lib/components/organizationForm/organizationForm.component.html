@@ -1,0 +1,29 @@
+<div class="flex flex-column gap-4 m-2 mb-4">
+    <p-floatlabel variant="on" class="custom-floatlabel">
+        <p-iconfield>
+            <p-inputicon class="pi pi-pencil" />
+            <input pInputText id="name" autocomplete="off" class="w-full custom-input" (ngModelChange)="descriptionError = false;"
+                [ngClass]="descriptionError ? 'error-input' : ''" [(ngModel)]="newName"/>
+        </p-iconfield>
+        <label for="name">Name</label>
+    </p-floatlabel>
+
+    <p-floatlabel variant="on" class="custom-floatlabel">
+        <p-iconfield class="textarea-iconfield">
+            <p-inputicon class="pi pi-align-justify"></p-inputicon>
+            <textarea id="description" rows="5" cols="30" pTextarea [(ngModel)]="newDescription" (ngModelChange)="descriptionError = false;"
+                style="resize: none;" class="w-full custom-textarea" [ngClass]="descriptionError ? 'error-textarea' : ''"></textarea>
+        </p-iconfield>
+        <label for="description">Description</label>
+    </p-floatlabel>
+
+    <p-floatlabel variant="on" class="custom-floatlabel">
+        <p-iconfield>
+            <p-inputicon class="pi pi-envelope" />
+            <input pInputText id="contact" autocomplete="off" class="w-full custom-input" (ngModelChange)="descriptionError = false;"
+                [ngClass]="descriptionError ? 'error-input' : ''" [(ngModel)]="newContact"/>
+        </p-iconfield>
+        <label for="contact">Contact</label>
+    </p-floatlabel>
+</div>
+<p-button class="custom-button ml-2" [label]="buttonLabel" size="small" [disabled]="descriptionFormModified()" (onClick)="updateDescription()"/>

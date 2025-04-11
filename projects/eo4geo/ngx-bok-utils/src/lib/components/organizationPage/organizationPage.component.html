@@ -1,0 +1,46 @@
+<p-toast class="custom-toast" position="bottom-right"/>
+<p-confirmdialog />
+<div class="flex flex-column align-items-stretch p-4">
+    <h2 class="mx-auto">Your Organization(s) Details</h2>
+    <p class="mx-auto">You are part of {{userOrganizations.length}} organization(s). You can also create your own organization.</p>
+    <div class="flex flex-wrap mb-4 align-items-center gap-4 justify-content-center w-full">
+        <p-select [options]="organizations" [showClear]="true" [disabled]="!logged" [(ngModel)]="selectedOrganization" 
+            [optionLabel]="'name'" placeholder="Select an Organization" [ngClass]="duplicatedOrg ? 'invalid-select' : 'custom-select'" 
+            (onChange)="updateDuplicatedOrg()" class="w-full max-w-30rem" [checkmark]="true" panelStyleClass="max-w-30rem" />
+        <p-button class="custom-button" label="Join Organization" size="small" (click)="joinOrganization()" [disabled]="!logged || !selectedOrganization"/>
+    </div>
+    <div class="flex flex-column gap-4">
+        <p-card class="custom-color-card flex justify-content-center" styleClass="flex-auto" [style]="{ 'max-width': '50rem', 'min-width': '20rem', height: 'auto'}" *ngFor="let organization of userOrganizations; let i = index">
+            <ng-template #header>
+                <div class="flex justify-content-between" style="padding-left: 1.25rem; padding-right: 1.25rem; padding-top: 1.25rem;">
+                    <div class="p-card-title">{{organization.name}}</div>
+                    <div class="flex gap-1">
+                        <p-button class="flex email-button" variant="text" rounded="true" size="large" icon="pi pi-envelope" [disabled]="!organization.email" 
+                            (click)="copyEmail(organization.email, organization.name)" pTooltip="{{organization.email}}" tooltipPosition="top"/>
+                        <p-button class="flex trash-button" variant="text" rounded="true" size="large" icon="pi pi-sign-out" (click)="deleteModal($event, organization._id, organization.name)"/>
+                    </div>
+                </div>
+            </ng-template>
+            <p class="m-0">
+                {{organization.description}}
+            </p>
+            <div *ngIf="organization.isAdmin">
+                <organization-admin [organization]="organization"></organization-admin>
+            </div>
+        </p-card>
+        <p-card class="custom-color-card flex justify-content-center" styleClass="flex-auto plus-card" [style]="{ 'max-width': '50rem', 'min-width': '20rem', height: 'auto'}">
+            <ng-template #content>
+                <p-accordion [value]="newOrganizationAcordion" [multiple]="true" class="custom-acordion" [expandIcon]="'pi pi-plus'" [collapseIcon]="'pi pi-minus'">
+                    <p-accordion-panel class="custom-accordionpanel" value="0" [disabled]="!logged">
+                        <p-accordion-header class="custom-accordionheader">Create New Organization</p-accordion-header>
+                        <p-accordion-content>
+                            <div class="pt-4">
+                                <organization-form [organization]="newOrganization" [descriptionError]="newOrganizationError" [buttonLabel]="'Create Organization'" [validationFunction]="newOrganizationValidation" (formChange)="createOrganization($event)"></organization-form>
+                            </div>
+                        </p-accordion-content>
+                    </p-accordion-panel>
+                </p-accordion>
+            </ng-template>
+        </p-card>
+    </div>
+</div>

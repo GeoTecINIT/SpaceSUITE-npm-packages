@@ -1,0 +1,93 @@
+<p-confirmdialog />
+
+<div class="mt-4" *ngIf="inplaceIndicator; else AdminContent">
+    <p-accordion [value]="[]" [multiple]="true" class="custom-acordion">
+        <p-accordion-panel value="0">
+            <p-accordion-header>Description</p-accordion-header>
+            <p-accordion-content>
+                <organization-form [organization]="organization" [descriptionError]="descriptionError" (formChange)="updateDescription($event)"></organization-form>
+            </p-accordion-content>
+        </p-accordion-panel>
+    
+        <p-accordion-panel value="1">
+            <p-accordion-header>Users</p-accordion-header>
+            <p-accordion-content>
+                <div class="flex flex-wrap my-3 justify-content-center align-items-center gap-4">
+                    <p-floatlabel variant="on" [class]="userError ? 'custom-floatlabel error-floatlabel' : 'custom-floatlabel'">
+                        <p-iconfield>
+                            <p-inputicon class="pi pi-envelope" />
+                            <input pInputText id="nDivision" autocomplete="off" class="w-full max-w-25rem" [class]="userError ? 'custom-input error-input' : 'custom-input'" 
+                                [(ngModel)]="newUser" (ngModelChange)="userError = false;"/>
+                        </p-iconfield>
+                        <label for="nDivision">User Email</label>
+                    </p-floatlabel>
+                    <p-button class="custom-button" label="Add User" size="small" [disabled]="!newUser" (onClick)="addUserToOrganization()"/>
+                </div>
+                <p-table [value]="users" [paginator]="true" [rows]="5" class="custom-table">
+                    <ng-template #header>
+                        <tr>
+                            <th>Email</th>
+                            <th>Name</th>
+                            <th>Admin</th>
+                            <th style="width: 5rem"></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template #body let-user>
+                        <tr >
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.name }}</td>
+                            <td>
+                                <p-toggleswitch class="custom-toogle" [(ngModel)]="user.isAdmin" (onChange)="switchAdminState(user._id, user.name, $event.checked)"/>
+                            </td>
+                            <td>
+                                <p-button class="flex trash-button" variant="text" rounded="true" size="large" icon="pi pi-trash" [disabled]="isCurrentUser(user._id)" (onClick)="deleteUserModal($event, user._id, user.name)"/>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </p-accordion-content>
+        </p-accordion-panel>
+    
+        <p-accordion-panel value="2">
+            <p-accordion-header>Divisions</p-accordion-header>
+            <p-accordion-content>
+                <div class="flex flex-wrap my-3 justify-content-center align-items-center gap-4">
+                    <p-floatlabel variant="on" [class]="divisionError ? 'custom-floatlabel error-floatlabel' : 'custom-floatlabel'">
+                        <p-iconfield>
+                            <p-inputicon class="pi pi-pencil" />
+                            <input pInputText id="nDivision" autocomplete="off" class="w-full max-w-25rem" [class]="divisionError ? 'custom-input error-input' : 'custom-input'" 
+                                [(ngModel)]="newDivision" (ngModelChange)="divisionError = false;"/>
+                        </p-iconfield>
+                        <label for="nDivision">New Division</label>
+                    </p-floatlabel>
+                    <p-button class="custom-button" label="Add Division" size="small" [disabled]="!newDivision" (onClick)="addDivision()"/>
+                </div>
+                <p-table [value]="divisions" [paginator]="true" [rows]="5" class="custom-table">
+                    <ng-template #header>
+                        <tr>
+                            <th>Name</th>
+                            <th style="width: 5rem"></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template #body let-division>
+                        <tr >
+                            <td>{{ division }}</td>
+                            <td>
+                                <p-button class="flex trash-button" variant="text" rounded="true" size="large" icon="pi pi-trash" (onClick)="deleteDivisionModal($event, division)"/>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </p-accordion-content>
+        </p-accordion-panel>
+    </p-accordion>
+    
+    <div class="flex justify-content-between align-items-center mt-4 gap-4">
+        <div class="custom-inplace-display" (click)="inplaceIndicator = false">Collapse</div>
+        <p-button class="delete-button" label="Delete Organization" size="small" (onClick)="deleteOrganizationModal($event)"/>
+    </div>
+</div>
+
+<ng-template #AdminContent>
+    <p class="mb-0 custom-inplace-display" (click)="inplaceIndicator = true">Admin Content</p>
+</ng-template>

@@ -1,0 +1,27 @@
+<div *ngIf="!loading; else spinner">
+    <div *ngIf="showSearchEngine && this.bubbleData" class="flex justify-content-center">
+        <search [inputValue]="searchInputFieldDoc" [searchBooleans]="searchBooleans" (inputValueChange)="onSearchValueChange($event)" 
+                (searchSettingsChange)="onSearchBooleansChange($event)" [suggestions]="suggestions" (codSelectedChange)="onCodeSelectedChange($event)"></search>
+    </div>
+    <div class="flex flex-wrap">
+        <div class="flex-1 p-3" *ngIf="bubbleData">
+            <bubble [bokData]="bubbleData" [codSelected]="codSelected" [selectedNodes]="selectedNodes" (codSelectedChange)="onCodeSelectedChange($event)"></bubble>
+        </div>
+        <div class="flex-1 p-3 overflow-auto min-w-screen lg:min-w-0 max-h-full lg:max-h-screen" *ngIf="nodeSelected && showDescription">
+            <div class="card h-full flex flex-col">
+                <description [bokNode]="nodeSelected" [showVersions]="showVersions" [versionMap]="versionMap" 
+                            [bokVersion]="bokVersion" [currentVersion]="currentVersion" (codSelectedChange)="onCodeSelectedChange($event)"
+                            (bokVersionChange)="onBokversionChange($event)" [isAnOldVersion]="isAnOldVersion"
+                            [isAnObsoleteId]="isAnObsoleteId"></description>
+            </div>
+        </div>
+    </div>
+    <p-scrolltop class="lg:hidden scroll-top" *ngIf="showDescription"/>
+</div>
+
+<ng-template #spinner>
+    <div class="flex justify-content-center align-content-center" style="min-height: 30rem">
+        <ng-container #container></ng-container>
+        <p-progress-spinner *ngIf="!customSpinner" strokeWidth="3" ariaLabel="loading" class="flex align-items-center justify-content-center" />
+    </div>
+</ng-template>

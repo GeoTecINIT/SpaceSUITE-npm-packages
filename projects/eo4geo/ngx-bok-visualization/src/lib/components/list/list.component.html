@@ -1,0 +1,42 @@
+<div *ngIf="array && array.length > 0">
+    <h3>{{ headline }} [{{ array.length }}]</h3>
+    <div>
+        <ul [ngStyle]="{'list-style-type': isConcept ? 'none' : 'disc', 'padding-left': isConcept ? '1em' : '2em'}">
+        <ng-container *ngFor="let item of sortedArray; let i = index">
+            <li style="margin-top: 0.25em;">
+            <!-- Conditional Rendering based on the Headline -->
+            <ng-container [ngSwitch]="isConcept">
+                <!-- Concept -->
+                <a
+                *ngSwitchCase="true"
+                style="font-weight: 400; cursor: pointer;"
+                (click)="browseToConcept(item[propertyname2!])"
+                id="sc-{{ mapValue(item) }}"
+                >
+                    [{{ item[propertyname2!] }}] {{ mapValue(item) }}
+                </a>
+                <!-- No Concept -->
+                <div *ngSwitchCase="false">
+                    <!-- URL -->
+                    <a
+                    *ngIf="propertyname2 && item[propertyname2] && item[propertyname2].trim().length > 0"
+                    style="font-weight: 400; cursor: pointer; text-decoration: none;"
+                    [href]="item[propertyname2]"
+                    target="_blank"
+                    >
+                        {{ mapValue(item) }}
+                    </a>
+                    <!-- Text -->
+                    <span *ngIf="!propertyname2 || !item[propertyname2] || item[propertyname2].trim().length == 0">
+                        {{ mapValue(item) }}
+                    </span>
+                </div>
+                <!-- Default -->
+                <a *ngSwitchDefault>{{ mapValue(item) }}</a>
+            </ng-container>
+            </li>
+        </ng-container>
+        </ul>
+    </div>
+</div>
+  
