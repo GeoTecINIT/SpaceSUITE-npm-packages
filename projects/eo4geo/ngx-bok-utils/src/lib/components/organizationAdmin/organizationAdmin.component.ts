@@ -117,6 +117,8 @@ export class OrganizationAdminComponent {
           this.switchAdminState(userId, userName, newState);
         },
         reject: () => {
+          const user = this.users.find(u => u._id === userId);
+          if (user) user.isAdmin = !newState;
         },
     });
   }
@@ -127,7 +129,7 @@ export class OrganizationAdminComponent {
       catchError(error => {
         isSuccess = false;
         const user = this.users.find(u => u._id === userId);
-        if (user) user.isAdmin = true;
+        if (user) user.isAdmin = !newState;
         this.orgService.emitMessage({ 
           severity: 'error', 
           summary: 'Error', 
