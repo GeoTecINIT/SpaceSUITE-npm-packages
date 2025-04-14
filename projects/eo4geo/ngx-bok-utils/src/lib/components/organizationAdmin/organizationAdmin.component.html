@@ -37,7 +37,7 @@
                             <td>{{ user.email }}</td>
                             <td>{{ user.name }}</td>
                             <td>
-                                <p-toggleswitch class="custom-toogle" [(ngModel)]="user.isAdmin" (onChange)="switchAdminState(user._id, user.name, $event.checked)"/>
+                                <p-toggleswitch class="custom-toogle" [(ngModel)]="user.isAdmin" (onChange)="switchAdminStateModal($event ,user._id, user.name, $event.checked)"/>
                             </td>
                             <td>
                                 <p-button class="flex trash-button" variant="text" rounded="true" size="large" icon="pi pi-trash" [disabled]="isCurrentUser(user._id)" (onClick)="deleteUserModal($event, user._id, user.name)"/>

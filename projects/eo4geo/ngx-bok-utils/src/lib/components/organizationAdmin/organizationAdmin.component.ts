@@ -1,7 +1,7 @@
 import { Component, Input} from "@angular/core";
 import { ButtonModule } from "primeng/button";
 import { TableModule } from 'primeng/table';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import { ToggleSwitchChangeEvent, ToggleSwitchModule } from 'primeng/toggleswitch';
 import { AccordionModule } from 'primeng/accordion';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from "@angular/common";
@@ -95,6 +95,30 @@ export class OrganizationAdminComponent {
         }
       })
     ).subscribe();
+  }
+
+  switchAdminStateModal(event: ToggleSwitchChangeEvent, userId: string, userName: string, newState: boolean) {
+    this.confirmationService.confirm({
+        target: event.originalEvent.target as EventTarget,
+        message: `Do you want to change ${userName} admin status?`,
+        header: 'Change Admin Status',
+        icon: 'pi pi-info-circle',
+        rejectLabel: 'Cancel',
+        rejectButtonProps: {
+            label: 'Cancel',
+            severity: 'secondary',
+        },
+        acceptButtonProps: {
+            label: 'Delete',
+            severity: 'primary',
+        },
+
+        accept: () => {
+          this.switchAdminState(userId, userName, newState);
+        },
+        reject: () => {
+        },
+    });
   }
 
   switchAdminState(userId: string, userName: string, newState: boolean) {
