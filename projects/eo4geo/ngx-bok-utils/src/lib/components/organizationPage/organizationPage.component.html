@@ -15,9 +15,10 @@
                 <div class="flex justify-content-between" style="padding-left: 1.25rem; padding-right: 1.25rem; padding-top: 1.25rem;">
                     <div class="p-card-title">{{organization.name}}</div>
                     <div class="flex gap-1">
-                        <p-button class="flex email-button" variant="text" rounded="true" size="large" icon="pi pi-envelope" [disabled]="!organization.email" 
+                        <p-button class="flex email-button" variant="text" rounded="true" size="large" icon="pi pi-envelope" [disabled]="!logged || !organization.email" 
                             (click)="copyEmail(organization.email, organization.name)" pTooltip="{{organization.email}}" tooltipPosition="top"/>
-                        <p-button class="flex trash-button" variant="text" rounded="true" size="large" icon="pi pi-sign-out" (click)="deleteModal($event, organization._id, organization.name)"/>
+                        <p-button class="flex trash-button" variant="text" rounded="true" size="large" icon="pi pi-sign-out" [disabled]="!logged"
+                            (click)="deleteModal($event, organization._id, organization.name)"/>
                     </div>
                 </div>
             </ng-template>

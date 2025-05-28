@@ -6,10 +6,11 @@ import { FormsModule } from "@angular/forms";
 import { InputIconModule } from 'primeng/inputicon';
 import { IconFieldModule } from 'primeng/iconfield';
 import { CommonModule } from "@angular/common";
-import { Subscription } from "rxjs";
+import { filter, Subscription } from "rxjs";
 import { UserService } from "../../services/user.service";
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from "primeng/api";
+import { Router } from "@angular/router";
 
 
 @Component({
@@ -22,13 +23,15 @@ import { MessageService } from "primeng/api";
 })
 export class UserPageComponent {
   userSubscription!: Subscription;
+  loggedSubscription!: Subscription;
 
+  logged: boolean = false;
 
   email: string = "";
   name: string = "";
   newName: string = "";
 
-  constructor(private userService: UserService, private messageService: MessageService) {}
+  constructor(private userService: UserService, private messageService: MessageService, private router: Router) {}
   
   ngOnInit() {
     this.userSubscription = this.userService.getNameAndEmail().subscribe(userData => {
@@ -36,10 +39,15 @@ export class UserPageComponent {
       this.name = userData?.name ?? '';
       this.newName = this.name;
     });
-  }
+    this.loggedSubscription = this.userService.getUserState().pipe(filter(value => value != undefined)).subscribe(({ logged }) => {
+      this.logged = logged;
+      if (!logged) this.router.navigate(['']);
+    });
+}
 
   ngOnDestroy() {
     this.userSubscription?.unsubscribe();
+    this.loggedSubscription?.unsubscribe();
   }
 
   async updateName() {

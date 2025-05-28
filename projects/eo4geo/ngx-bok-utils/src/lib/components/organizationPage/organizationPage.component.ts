@@ -14,6 +14,7 @@ import { OrganizationService } from "../../services/organization.service";
 import { UserService } from "../../services/user.service";
 import { OrganizationAdminComponent } from "../organizationAdmin/organizationAdmin.component";
 import { OrganizationFormComponent } from "../organizationForm/organizationForm.component";
+import { Router } from "@angular/router";
 
 @Component({
   standalone: true,
@@ -40,11 +41,12 @@ export class OrganizationPageComponent {
   newOrganizationError: boolean = false;
   newOrganizationAcordion = []
 
-  constructor(private orgService: OrganizationService, private messageService: MessageService, private userService: UserService, private confirmationService: ConfirmationService) {}
+  constructor(private orgService: OrganizationService, private messageService: MessageService, private userService: UserService, private confirmationService: ConfirmationService, private router: Router) {}
   
   ngOnInit() {
     this.userStateSubscription = this.userService.getUserState().pipe(filter(value => value != undefined)).subscribe(({ logged }) => {
       this.logged = logged;
+      if (!logged) this.router.navigate(['']);
     });
 
     this.orgSubscription = this.orgService.getUserOrganizations().subscribe(orgs => {
