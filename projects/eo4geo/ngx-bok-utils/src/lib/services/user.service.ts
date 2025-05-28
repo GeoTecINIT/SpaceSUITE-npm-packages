@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
-import { Auth, authState, createUserWithEmailAndPassword, GoogleAuthProvider, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from '@angular/fire/auth';
+import { Auth, authState, createUserWithEmailAndPassword, GoogleAuthProvider, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile, user } from '@angular/fire/auth';
 import { Firestore, collection, CollectionReference, doc, getDoc, setDoc, updateDoc, docData, DocumentReference, query, where, getDocs } from '@angular/fire/firestore';
-import { BehaviorSubject, from, Observable, of, concatMap, take } from 'rxjs';
+import { from, Observable, of, concatMap, take, ReplaySubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -23,10 +23,7 @@ export class UserService {
     ["auth/network-request-failed", "Network error."],
   ]);
 
-  private userStateSubject = new BehaviorSubject<{ logged: boolean; nameInitial: string }>({
-    logged: false,
-    nameInitial: 'A'
-  });
+  private userStateSubject = new ReplaySubject<{ logged: boolean; nameInitial: string } | undefined>(1);
   
   constructor() {
     this.auth = inject(Auth);
@@ -34,7 +31,7 @@ export class UserService {
 
     this.userCollection = collection(this.db, 'Users');
 
-    authState(this.auth).subscribe(user => {
+    user(this.auth).subscribe(user => {
         const logged = !!user;
         const nameInitial = user?.displayName ? user.displayName[0].toUpperCase() : 'A';
         this.userStateSubject.next({ logged, nameInitial });
@@ -105,7 +102,7 @@ export class UserService {
     return emailRegex.test(email);
   }
 
-  getUserState(): Observable<{ logged: boolean; nameInitial: string }> {
+  getUserState(): Observable<{ logged: boolean; nameInitial: string } | undefined> {
     return this.userStateSubject.asObservable();
   }
 

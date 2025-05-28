@@ -6,7 +6,7 @@ import { AccordionModule } from 'primeng/accordion';
 import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from "@angular/common";
-import { catchError, finalize, of, Subscription, take } from "rxjs";
+import { catchError, filter, finalize, of, Subscription, take } from "rxjs";
 import { MessageService, ConfirmationService } from "primeng/api";
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { TooltipModule } from 'primeng/tooltip';
@@ -43,7 +43,7 @@ export class OrganizationPageComponent {
   constructor(private orgService: OrganizationService, private messageService: MessageService, private userService: UserService, private confirmationService: ConfirmationService) {}
   
   ngOnInit() {
-    this.userStateSubscription = this.userService.getUserState().subscribe(({ logged }) => {
+    this.userStateSubscription = this.userService.getUserState().pipe(filter(value => value != undefined)).subscribe(({ logged }) => {
       this.logged = logged;
     });
 

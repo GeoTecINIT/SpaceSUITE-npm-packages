@@ -5,7 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { TieredMenuModule } from 'primeng/tieredmenu';
 import { AvatarModule } from 'primeng/avatar';
 import { AvatarGroupModule } from 'primeng/avatargroup';
-import { Subscription } from 'rxjs';
+import { filter, Subscription } from 'rxjs';
 import { SessionModalComponent } from "../signInModal/sessionModal.component";
 import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
@@ -136,7 +136,7 @@ export class HeaderComponent {
   constructor(private userService: UserService, private router: Router) {}
 
   ngOnInit() {
-    this.userStateSubscription = this.userService.getUserState().subscribe(({ logged, nameInitial }) => {
+    this.userStateSubscription = this.userService.getUserState().pipe(filter(value => value != undefined)).subscribe(({ logged, nameInitial }) => {
       this.logged = logged;
       this.nameInitial = nameInitial;
       if (this.logged) this.buttonItems = this.items.concat(this.userItems);
