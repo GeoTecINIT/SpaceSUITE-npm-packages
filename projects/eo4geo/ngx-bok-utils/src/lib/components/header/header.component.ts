@@ -160,6 +160,6 @@ export class HeaderComponent {
   }
 
   navigateToMainPage() {
-    this.router.navigate([''], { replaceUrl: true });
+    this.router.navigate(['']);
   }
 }
