@@ -1,11 +1,13 @@
 .custom-input {
     --p-inputtext-focus-border-color: var(--hover-color);
     --p-inputtext-hover-border-color: var(--hover-color);
+    min-width: 100%;
     max-width: 22rem !important;
 }
 
 .custom-floatlabel {
     --p-floatlabel-focus-color: var(--hover-color);
+    min-width: 100%;
 }
 
 .custom-secondary-button {
