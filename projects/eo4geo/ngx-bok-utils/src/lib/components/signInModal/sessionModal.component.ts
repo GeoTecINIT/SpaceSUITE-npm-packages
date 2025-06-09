@@ -27,7 +27,9 @@ export class SessionModalComponent {
 
   email: string = '';
   password: string = '';
+  showPassword: boolean = false;
   repeatPassword: string = '';
+  showRepeatPassword: boolean = false;
 
   error: string | null = null;
 

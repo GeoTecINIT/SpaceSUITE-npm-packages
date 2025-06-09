@@ -13,7 +13,8 @@
         <p-floatlabel variant="on" [class]="error ? 'custom-floatlabel error-floatlabel' : 'custom-floatlabel'">
             <p-iconfield>
                 <p-inputicon class="pi pi-lock" />
-                <input pInputText id="password" autocomplete="off" [class]="error ? 'custom-input error-input' : 'custom-input'" [(ngModel)]="password"/>
+                <input [type]="showPassword ? 'text' : 'password'" pInputText id="password" autocomplete="off" [class]="error ? 'custom-input error-input' : 'custom-input'" [(ngModel)]="password"/>
+                <i [class]="showPassword ? 'eye-icon pi pi-eye-slash' : 'eye-icon pi pi-eye'" (click)="showPassword = !showPassword"></i>
             </p-iconfield>
             <label for="password">Password</label>
         </p-floatlabel>
@@ -22,7 +23,8 @@
         <p-floatlabel variant="on" [class]="error ? 'custom-floatlabel error-floatlabel' : 'custom-floatlabel'">
             <p-iconfield>
                 <p-inputicon class="pi pi-lock" />
-                <input pInputText id="rPassword" autocomplete="off" [class]="error ? 'custom-input error-input' : 'custom-input'" [(ngModel)]="repeatPassword"/>
+                <input [type]="showRepeatPassword ? 'text' : 'password'" pInputText id="rPassword" autocomplete="off" [class]="error ? 'custom-input error-input' : 'custom-input'" [(ngModel)]="repeatPassword"/>
+                <i [class]="showRepeatPassword ? 'eye-icon pi pi-eye-slash' : 'eye-icon pi pi-eye'" (click)="showRepeatPassword = !showRepeatPassword"></i>
             </p-iconfield>
             <label for="rPassword">Repeat Password</label>
         </p-floatlabel>

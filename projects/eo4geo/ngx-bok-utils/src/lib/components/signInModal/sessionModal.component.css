@@ -1,6 +1,7 @@
 .custom-input {
     --p-inputtext-focus-border-color: var(--hover-color);
     --p-inputtext-hover-border-color: var(--hover-color);
+    max-width: 22rem !important;
 }
 
 .custom-floatlabel {
@@ -39,4 +40,17 @@ a:hover {
 
 .error-floatlabel {
     --p-floatlabel-color: var(--danger-color);
+}
+
+.eye-icon {
+    position: absolute; 
+    right: 1rem; 
+    top: 50%; 
+    transform: translateY(-50%); 
+    cursor: pointer;
+    color: #94a3b8
+}
+
+.eye-icon:hover {
+    color: var(--hover-color)
 }
