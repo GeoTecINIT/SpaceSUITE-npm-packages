@@ -140,7 +140,10 @@ export class HeaderComponent {
       this.logged = logged;
       this.nameInitial = nameInitial;
       if (this.logged) this.buttonItems = this.items.concat(this.userItems);
-      else this.buttonItems = this.items.concat(this.unregisteredUserItems);
+      else {
+        this.buttonItems = this.items.concat(this.unregisteredUserItems);
+        this.router.navigateByUrl(this.router.url);
+      }
     });
   }
 
@@ -150,7 +153,6 @@ export class HeaderComponent {
 
   async logout() {
     await this.userService.logout();
-    this.navigateToMainPage();
   }
 
   @HostListener('document:click', ['$event'])
