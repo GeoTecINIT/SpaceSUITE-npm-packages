@@ -150,6 +150,7 @@ export class HeaderComponent {
 
   async logout() {
     await this.userService.logout();
+    this.navigateToMainPage();
   }
 
   @HostListener('document:click', ['$event'])

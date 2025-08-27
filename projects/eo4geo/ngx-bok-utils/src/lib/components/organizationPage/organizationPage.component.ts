@@ -28,27 +28,20 @@ export class OrganizationPageComponent {
 
   userOrganizations: {_id: string, name: string, description: string, email:string, isAdmin: boolean}[] = [];
   orgSubscription!: Subscription;
-  userStateSubscription!: Subscription;
   adminMessageSubscription!: Subscription;
 
   organizations: {_id: string, name: string}[] = [];
   selectedOrganization: {_id: string, name: string} | undefined;
 
-  logged: boolean = false;
   duplicatedOrg: boolean = false;
 
   newOrganization: {_id: string, name: string, description: string, email:string, isAdmin: boolean} = {_id: "", name: "", description: "", email: "", isAdmin: true};
   newOrganizationError: boolean = false;
   newOrganizationAcordion = []
 
-  constructor(private orgService: OrganizationService, private messageService: MessageService, private userService: UserService, private confirmationService: ConfirmationService, private router: Router) {}
+  constructor(private orgService: OrganizationService, private messageService: MessageService, private confirmationService: ConfirmationService) {}
   
   ngOnInit() {
-    this.userStateSubscription = this.userService.getUserState().pipe(filter(value => value != undefined)).subscribe(({ logged }) => {
-      this.logged = logged;
-      if (!logged) this.router.navigate(['']);
-    });
-
     this.orgSubscription = this.orgService.getUserOrganizations().subscribe(orgs => {
       this.userOrganizations = orgs;
     });
@@ -67,7 +60,6 @@ export class OrganizationPageComponent {
 
   ngOnDestroy() {
     this.orgSubscription?.unsubscribe();
-    this.userStateSubscription?.unsubscribe();
     this.adminMessageSubscription?.unsubscribe();
   }
 

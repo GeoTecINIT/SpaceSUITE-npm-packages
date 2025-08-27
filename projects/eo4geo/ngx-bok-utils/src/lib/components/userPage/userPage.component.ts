@@ -23,15 +23,12 @@ import { Router } from "@angular/router";
 })
 export class UserPageComponent {
   userSubscription!: Subscription;
-  loggedSubscription!: Subscription;
-
-  logged: boolean = false;
 
   email: string = "";
   name: string = "";
   newName: string = "";
 
-  constructor(private userService: UserService, private messageService: MessageService, private router: Router) {}
+  constructor(private userService: UserService, private messageService: MessageService) {}
   
   ngOnInit() {
     this.userSubscription = this.userService.getNameAndEmail().subscribe(userData => {
@@ -39,15 +36,10 @@ export class UserPageComponent {
       this.name = userData?.name ?? '';
       this.newName = this.name;
     });
-    this.loggedSubscription = this.userService.getUserState().pipe(filter(value => value != undefined)).subscribe(({ logged }) => {
-      this.logged = logged;
-      if (!logged) this.router.navigate(['']);
-    });
 }
 
   ngOnDestroy() {
     this.userSubscription?.unsubscribe();
-    this.loggedSubscription?.unsubscribe();
   }
 
   async updateName() {
