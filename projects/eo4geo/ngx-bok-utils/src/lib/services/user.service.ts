@@ -23,7 +23,7 @@ export class UserService {
     ["auth/network-request-failed", "Network error."],
   ]);
 
-  private userStateSubject = new ReplaySubject<{ logged: boolean; nameInitial: string } | undefined>(1);
+  private userStateSubject = new ReplaySubject<{ logged: boolean; nameInitial: string; uid: string } | undefined>(1);
   
   constructor() {
     this.auth = inject(Auth);
@@ -34,7 +34,8 @@ export class UserService {
     user(this.auth).subscribe(user => {
         const logged = !!user;
         const nameInitial = user?.displayName ? user.displayName[0].toUpperCase() : 'A';
-        this.userStateSubject.next({ logged, nameInitial });
+        const uid: string = user?.uid || '';
+        this.userStateSubject.next({ logged, nameInitial, uid});
     });
   }
 
@@ -102,7 +103,7 @@ export class UserService {
     return emailRegex.test(email);
   }
 
-  getUserState(): Observable<{ logged: boolean; nameInitial: string } | undefined> {
+  getUserState(): Observable<{ logged: boolean; nameInitial: string; uid: string } | undefined> {
     return this.userStateSubject.asObservable();
   }
 
@@ -117,7 +118,7 @@ export class UserService {
         const userDocRef = doc(this.userCollection, user.uid);
         await updateDoc(userDocRef, { name: newName });
         await updateProfile(user, { displayName: newName });
-        this.userStateSubject.next({ logged: true, nameInitial: newName[0].toUpperCase() });
+        this.userStateSubject.next({ logged: true, nameInitial: newName[0].toUpperCase(), uid: user.uid });
       } catch (error) {
         console.error('Error updating name:', error);
         throw error;

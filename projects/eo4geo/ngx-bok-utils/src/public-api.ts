@@ -8,3 +8,4 @@ export * from './lib/components/404/notFoundPage.component';
 export * from './lib/components/userPage/userPage.component';
 export * from './lib/components/organizationPage/organizationPage.component';
 export * from './lib/guards/auth.guard';
+export * from './lib/services/auth.service';
