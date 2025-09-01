@@ -4,6 +4,10 @@ import { ExitWithoutSavingService } from '../services/exitWithoutSaving.service'
 
 export const exitWithoutSavingGuard: CanDeactivateFn<Component> = (component: Component, currentRoute: ActivatedRouteSnapshot, currentState: RouterStateSnapshot) => {
     const exitWithoutSavingService = inject(ExitWithoutSavingService);
+    if (exitWithoutSavingService.bypassGuard.getValue()) {
+        exitWithoutSavingService.bypassGuard.next(false);
+        return true;
+    }
     exitWithoutSavingService.showModalSubject.next(true);
     return exitWithoutSavingService.exitSubject.asObservable();
 };
