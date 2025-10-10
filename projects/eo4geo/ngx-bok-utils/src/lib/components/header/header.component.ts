@@ -142,7 +142,6 @@ export class HeaderComponent {
       if (this.logged) this.buttonItems = this.items.concat(this.userItems);
       else {
         this.buttonItems = this.items.concat(this.unregisteredUserItems);
-        this.router.navigateByUrl(this.router.url);
       }
     });
   }

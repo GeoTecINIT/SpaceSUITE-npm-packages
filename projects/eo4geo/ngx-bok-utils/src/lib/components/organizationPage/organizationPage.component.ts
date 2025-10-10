@@ -39,7 +39,10 @@ export class OrganizationPageComponent {
   newOrganizationError: boolean = false;
   newOrganizationAcordion = []
 
-  constructor(private orgService: OrganizationService, private messageService: MessageService, private confirmationService: ConfirmationService) {}
+  userStateSubscription!: Subscription;
+
+  constructor(private orgService: OrganizationService, private messageService: MessageService, private confirmationService: ConfirmationService, 
+              private userService: UserService, private router: Router) {}
   
   ngOnInit() {
     this.orgSubscription = this.orgService.getUserOrganizations().subscribe(orgs => {
@@ -56,11 +59,15 @@ export class OrganizationPageComponent {
     });
 
     this.adminMessageSubscription = this.orgService.adminOrganizationMessages$.subscribe( message => this.messageService.add(message));
+    this.userStateSubscription = this.userService.getUserState().subscribe( userState => {
+      if (!userState?.logged) this.router.navigate([''])
+    });
   }
 
   ngOnDestroy() {
     this.orgSubscription?.unsubscribe();
     this.adminMessageSubscription?.unsubscribe();
+    this.userStateSubscription?.unsubscribe();
   }
 
   leaveOrganization(orgId: string, orgName: string) {
