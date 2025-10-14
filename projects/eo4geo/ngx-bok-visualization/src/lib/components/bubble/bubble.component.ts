@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output, SimpleChanges} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, Output, SimpleChanges} from '@angular/core';
 import { ParsedBokData } from '../../model/parsed-bok-data.model';
 import { BaseType, select, Selection } from 'd3-selection';
 import { scaleLinear, scaleOrdinal } from 'd3-scale';
@@ -22,7 +22,6 @@ export class BubbleComponent {
   @Input() codSelected = 'GIST';
   @Input() selectedNodes: string[] = [];
   @Output() codSelectedChange = new EventEmitter<string>();
-  public svgId = 'bubble';
   private diameter = 0;
   private node?: Selection<BaseType, HierarchyCircularNode<CustomD3Node>, SVGGElement, unknown>;
   private circle?: Selection<SVGCircleElement, HierarchyCircularNode<CustomD3Node>, SVGGElement, unknown>;
@@ -30,6 +29,8 @@ export class BubbleComponent {
   private focus?: HierarchyCircularNode<CustomD3Node>;
   private view: ZoomView = [0, 0, 1];
   private clickedNode?: HierarchyCircularNode<CustomD3Node>;
+
+  constructor(private host: ElementRef<HTMLElement>) {}
 
   ngAfterViewInit() {
     this.createChart();
@@ -41,7 +42,7 @@ export class BubbleComponent {
     if ((changes['bokData'] && !changes['bokData'].isFirstChange()) || 
         (changes['COLOR_STROKE_SELECTED'] && !changes['COLOR_STROKE_SELECTED'].isFirstChange()) || 
         (changes['margin'] && !changes['margin'].isFirstChange())) {
-      select(this.svgId).select('svg').remove();
+      select(this.host.nativeElement).select('svg').remove();
       this.createChart();
     }
     // Zoom to the new concept
@@ -61,11 +62,13 @@ export class BubbleComponent {
   }    
 
   ngOnDestroy() {
-    select(this.svgId).select('svg').remove();
+    select(this.host.nativeElement).select('svg').remove();
   }
 
   private createChart(): void {
-    const svg = select(this.svgId)
+    const container = select(this.host.nativeElement);
+    container.select('svg').remove();
+    const svg = container
       .append('svg')
       .attr('preserveAspectRatio', 'xMinYMin meet')
       .attr('viewBox', '0 0 300 300')
@@ -106,7 +109,7 @@ export class BubbleComponent {
     .attr("r", (d) => d.r)
     .attr("x", (d) => d.x)
     .attr("y", (d) => d.y)
-    .attr("id", (d) => d.data.id)
+    .attr("data-node-id", (d) => d.data.id)
     .attr("class", (d) => {
       return d.parent ? (d.children ? "node" : "node node--leaf") : "node node--root";
     })
@@ -257,8 +260,8 @@ export class BubbleComponent {
 
   // Clean old selection
   private cleanSearch(previousValues: string[]) {
-    for (let i = 0; i < previousValues.length; i++) {
-      let circle = document.getElementById(previousValues[i]);
+    for (const v of previousValues || []) {
+      const circle = this.host.nativeElement.querySelector(`[data-node-id="${v}"]`) as HTMLElement | null;
       if (circle != null) {
         circle.style.stroke = "";
         circle.style.strokeWidth = "";
@@ -268,9 +271,9 @@ export class BubbleComponent {
 
   // Highlight new selection
   private highlightSearch() {
-    for (let i = 0; i < this.selectedNodes.length; i++) {
-      let circle = document.getElementById(this.selectedNodes[i]);
-      if (circle != null) {
+    for (const id of this.selectedNodes || []) {
+      const circle = this.host.nativeElement.querySelector(`[data-node-id="${id}"]`) as HTMLElement | null;
+      if (circle) {
         circle.style.stroke = this.COLOR_STROKE_SELECTED;
         circle.style.strokeWidth = "0.5px";
       }
