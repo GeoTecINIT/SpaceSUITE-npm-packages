@@ -31,7 +31,7 @@ export class BubbleComponent {
   private view: ZoomView = [0, 0, 1];
   private clickedNode?: HierarchyCircularNode<CustomD3Node>;
 
-  ngOnInit(): void {
+  ngAfterViewInit() {
     this.createChart();
     this.highlightSearch();
   }
@@ -59,6 +59,10 @@ export class BubbleComponent {
       this.highlightSearch();
     }
   }    
+
+  ngOnDestroy() {
+    select(this.svgId).select('svg').remove();
+  }
 
   private createChart(): void {
     const svg = select(this.svgId)
