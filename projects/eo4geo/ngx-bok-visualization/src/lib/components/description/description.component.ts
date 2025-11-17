@@ -24,7 +24,7 @@ export class DescriptionComponent {
   @Output() bokVersionChange = new EventEmitter<string>();
 
   get permalink(): string {
-    return `https://bok.eo4geo.eu/${this.bokNode.nameShort}`;
+    return `https://geospacebok.eu/${this.bokNode.nameShort}`;
   }
 
   get statusText(): string | null {
