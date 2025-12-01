@@ -46,6 +46,16 @@ export class BokInformationService {
     );
   }
 
+  getConceptSkills(code: string): Observable<string[]> {
+    return this.bokDataService.getParsedBokData().pipe(
+      filter((parsedData): parsedData is ParsedBokData => parsedData !== undefined),
+      map((parsedData: ParsedBokData) => {
+        const skills = parsedData.conceptNodeCollection.getNodeByNameShort(code)?.demonstrableSkills || [];
+        return skills.map(value => value.description);
+      })
+    );
+  }
+
   private checkParents(node: CustomD3Node, knowledgeAreas: Set<string>): Set<string> {
     let superiorNodes = [...node.otherParents];
     if (node.parent) superiorNodes.push(node.parent);
