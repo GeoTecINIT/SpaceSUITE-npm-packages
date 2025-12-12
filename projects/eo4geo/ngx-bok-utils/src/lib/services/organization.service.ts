@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Auth, authState } from '@angular/fire/auth';
 import { Firestore, collection, CollectionReference, doc, updateDoc, docData, DocumentReference, collectionData, setDoc, deleteDoc } from '@angular/fire/firestore';
 import { ToastMessageOptions } from 'primeng/api';
-import { catchError, concatMap, first, forkJoin, from, map, Observable, of, Subject, take } from 'rxjs';
+import { catchError, concatMap, first, forkJoin, from, map, Observable, of, Subject, take, combineLatest, switchMap, distinctUntilChanged } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -34,20 +34,19 @@ export class OrganizationService {
 
   getUserOrganizations(): Observable<{ _id: string, name: string; description: string, email: string, isAdmin: boolean }[]> {
     return authState(this.auth).pipe(
-      concatMap(user => {
-        if (user) {
-          const userDocRef: DocumentReference = doc(this.userCollection, user.uid);
-          return docData(userDocRef) as Observable<{ organizations: string[] }>;
-        }
-        return of(null);
+      switchMap(user => {
+        if (!user) return of(null);
+        const userDocRef: DocumentReference = doc(this.userCollection, user.uid);
+        return docData(userDocRef) as Observable<{ organizations: string[] }>;
       }),
-      concatMap(userData => {
-        if (userData?.organizations && userData.organizations.length > 0) {
-          const orgRequests = userData.organizations.map(orgId => this.getOrganizationInfo(orgId));
-          return forkJoin(orgRequests);
-        }
-        return of([]);
-      })    
+      distinctUntilChanged((a,b) => JSON.stringify(a) === JSON.stringify(b)),
+      switchMap(userData => {
+        const orgIds = userData?.organizations ?? [];
+        if (orgIds.length === 0) return of([]);
+        const orgObservables = orgIds.map(id => this.getOrganizationInfo(id));
+        return combineLatest(orgObservables);
+      }),
+      map(orgs => orgs ?? [])
     );
   }
 
