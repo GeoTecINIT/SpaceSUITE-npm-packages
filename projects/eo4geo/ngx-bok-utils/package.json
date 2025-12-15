@@ -1,6 +1,6 @@
 {
   "name": "@eo4geo/ngx-bok-utils",
-  "version": "1.5.6",
+  "version": "1.5.8",
   "author": "Marc Pardo Fernández",
   "license": "MIT",
   "peerDependencies": {

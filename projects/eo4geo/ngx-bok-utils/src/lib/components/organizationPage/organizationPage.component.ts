@@ -6,7 +6,7 @@ import { AccordionModule } from 'primeng/accordion';
 import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from "@angular/common";
-import { catchError, filter, finalize, of, Subscription, take } from "rxjs";
+import { catchError, filter, finalize, map, Observable, of, Subscription, switchMap, take, tap } from "rxjs";
 import { MessageService, ConfirmationService } from "primeng/api";
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { TooltipModule } from 'primeng/tooltip';
@@ -26,11 +26,10 @@ import { Router } from "@angular/router";
 })
 export class OrganizationPageComponent {
 
-  userOrganizations: {_id: string, name: string, description: string, email:string, isAdmin: boolean}[] = [];
-  orgSubscription!: Subscription;
+  userOrganizations$!: Observable<{_id: string, name: string, description: string, email:string, isAdmin: boolean}[]>;
   adminMessageSubscription!: Subscription;
 
-  organizations: {_id: string, name: string}[] = [];
+  organizations$!: Observable<{_id: string, name: string}[]>;
   selectedOrganization: {_id: string, name: string} | undefined;
 
   duplicatedOrg: boolean = false;
@@ -45,18 +44,18 @@ export class OrganizationPageComponent {
               private userService: UserService, private router: Router) {}
   
   ngOnInit() {
-    this.orgSubscription = this.orgService.getUserOrganizations().subscribe(orgs => {
-      this.userOrganizations = orgs;
-    });
-  
-    this.orgService.getOrganizations().pipe(take(1)).subscribe(orgs => {
-      this.organizations = orgs.map(org => ({
-        _id: org._id,
-        name: org.name.trim().charAt(0).toUpperCase() + org.name.trim().slice(1)
-      }));
-  
-      this.organizations.sort((a, b) => a.name.localeCompare(b.name));
-    });
+    this.userOrganizations$ = this.orgService.getUserOrganizations();
+
+    this.organizations$ = this.orgService.getOrganizations().pipe(
+      take(1), 
+      map(orgs => {
+        const organizations = orgs.map(org => ({
+          _id: org._id,
+          name: org.name.trim().charAt(0).toUpperCase() + org.name.trim().slice(1)
+        }));
+        return organizations.sort((a, b) => a.name.localeCompare(b.name));
+      })
+    );
 
     this.adminMessageSubscription = this.orgService.adminOrganizationMessages$.subscribe( message => this.messageService.add(message));
     this.userStateSubscription = this.userService.getUserState().subscribe( userState => {
@@ -65,7 +64,6 @@ export class OrganizationPageComponent {
   }
 
   ngOnDestroy() {
-    this.orgSubscription?.unsubscribe();
     this.adminMessageSubscription?.unsubscribe();
     this.userStateSubscription?.unsubscribe();
   }
@@ -98,46 +96,63 @@ export class OrganizationPageComponent {
     ).subscribe();
   }
 
-  joinOrganization() {
+  private checkSelectedOrganization(): Observable<boolean> {
     if (!this.selectedOrganization) {
-      return;
+      return of(false);
     }
-    if (this.userOrganizations.some(userOrg => userOrg._id === this.selectedOrganization?._id)) {
-      this.messageService.add({ 
-        severity: 'warn', 
-        summary: 'Warn', 
-        detail: 'You cannot join an organization to which you already belong.',
-        life: 3000, 
-        closable: true,
-      });
-      this.duplicatedOrg = true;
-      return;
-    }
-    const orgId: string = this.selectedOrganization._id;
-    const orgName: string = this.selectedOrganization.name;
-    let isSuccess = true;
-    this.orgService.joinOrganization(orgId).pipe(
-      catchError((error) => {
-        isSuccess = false;
-        this.messageService.add({ 
-          severity: 'error', 
-          summary: 'Error', 
-          detail: error.message ?? 'Something went wrong. Try again later or contact the administrator.', 
-          life: 3000, 
-          closable: true 
-        });
-        return of(null);
-      }),
-      finalize(() => {
-        if (isSuccess) {
-          this.messageService.add({ 
-            severity: 'info', 
-            summary: 'Info', 
-            detail: `You joined ${orgName} without problems.`,
-            life: 3000, 
-            closable: true 
+
+    return this.userOrganizations$.pipe(
+      take(1),
+      map(userOrgs =>
+        userOrgs.some(o => o._id === this.selectedOrganization!._id)
+      ),
+      tap(isDuplicated => {
+        if (isDuplicated) {
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'Warn',
+            detail: 'You cannot join an organization to which you already belong.',
+            life: 3000,
+            closable: true,
           });
+          this.duplicatedOrg = true;
         }
+      }),
+      map(isDuplicated => !isDuplicated)
+    );
+  }
+
+  joinOrganization() {
+    this.checkSelectedOrganization().pipe(
+      filter(valid => valid),
+      switchMap(() => {
+        const orgId: string = this.selectedOrganization!._id;
+        const orgName: string = this.selectedOrganization!.name;
+        let isSuccess = true;
+        return this.orgService.joinOrganization(orgId).pipe(
+          catchError((error) => {
+            isSuccess = false;
+            this.messageService.add({ 
+              severity: 'error', 
+              summary: 'Error', 
+              detail: error.message ?? 'Something went wrong. Try again later or contact the administrator.', 
+              life: 3000, 
+              closable: true 
+            });
+            return of(null);
+          }),
+          finalize(() => {
+            if (isSuccess) {
+              this.messageService.add({ 
+                severity: 'info', 
+                summary: 'Info', 
+                detail: `You joined ${orgName} without problems.`,
+                life: 3000, 
+                closable: true 
+              });
+            }
+          })
+        )
       })
     ).subscribe();
   }
