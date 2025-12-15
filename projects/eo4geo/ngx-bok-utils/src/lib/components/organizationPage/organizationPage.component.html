@@ -2,7 +2,7 @@
 <p-confirmdialog />
 <div class="flex flex-column align-items-stretch p-4">
     <h2 class="mx-auto">Your Organization(s) Details</h2>
-    <p class="mx-auto">You are part of {{(userOrganizations$ | async)?.length}} organization(s). You can also create your own organization.</p>
+    <p class="mx-auto">You are part of {{(userOrganizations$ | async)?.length || 0}} organization(s). You can also create your own organization.</p>
     <div class="flex flex-wrap mb-4 align-items-center gap-4 justify-content-center w-full">
         <p-select [options]="(organizations$ | async) || []" [showClear]="true" [(ngModel)]="selectedOrganization" 
             [optionLabel]="'name'" placeholder="Select an Organization" [ngClass]="duplicatedOrg ? 'invalid-select' : 'custom-select'" 
