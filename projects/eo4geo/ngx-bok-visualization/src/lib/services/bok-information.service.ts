@@ -2,13 +2,15 @@ import { Injectable } from "@angular/core";
 import { BokDataService } from "./bok-data.service";
 import { BokFirebaseService } from "./bok-firebase.service";
 import { ParsedBokData } from "../model/parsed-bok-data.model";
-import { filter, Observable, map } from "rxjs";
+import { filter, Observable, map, of, tap, concatMap, switchMap } from "rxjs";
 import { CustomD3Node } from "../model/custom-d3-node.model";
 
 @Injectable({
   providedIn: 'root',
 })
 export class BokInformationService {
+
+  private deprecatedConceptsCache = new Map<string, DeprecatedConcept>();
     
   constructor(private bokDataService: BokDataService, private bokFirebaseService: BokFirebaseService) {
     this.bokFirebaseService.getBokVersion('current').subscribe(
@@ -29,7 +31,32 @@ export class BokInformationService {
   getConceptName(code: string): Observable<string> {
     return this.bokDataService.getParsedBokData().pipe(
       filter((parsedData): parsedData is ParsedBokData => parsedData !== undefined),
-      map((parsedData: ParsedBokData) => parsedData.namehash[code])
+      switchMap((parsedData: ParsedBokData) => {
+        const currentName = parsedData.namehash[code];
+        if (currentName) return of(currentName);
+        return this.getDeprecatedConcept(code).pipe(
+          map((deprecatedConcept) => {
+            if (deprecatedConcept) {
+              return deprecatedConcept.name;
+            } else {
+              return 'Unknown Concept';
+            }
+          })
+        );
+      })
+    );
+  }
+
+  private getDeprecatedConcept(code: string): Observable<DeprecatedConcept | null> {
+    if (this.deprecatedConceptsCache.has(code)) {
+      return of(this.deprecatedConceptsCache.get(code)!);
+    }
+    return this.bokFirebaseService.getDeprecatedConcept(code).pipe(
+      tap((deprecatedConcept) => {
+        if (deprecatedConcept) {
+          this.deprecatedConceptsCache.set(code, deprecatedConcept);
+        }
+      })
     );
   }
 

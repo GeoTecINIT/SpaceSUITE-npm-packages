@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, concatMap, filter, forkJoin, from, map, Observable, of, take, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { collection, CollectionReference, doc, Firestore, getDoc } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root',
@@ -12,8 +13,13 @@ export class BokFirebaseService {
   private currentVersion$ = new BehaviorSubject<string | undefined>(undefined);  
   private URL_BASE: string | undefined;
 
+  private db: Firestore;
+  private deprecatedConceptsCollection: CollectionReference;
+
   constructor(private http: HttpClient ) {
     this.URL_BASE = environment.URL_ARRAY[0];
+    this.db = inject(Firestore);
+    this.deprecatedConceptsCollection = collection(this.db, 'DeprecatedConcepts');
   }
 
   // Function to get the BOK data for a specific version from Firebase
@@ -136,5 +142,20 @@ export class BokFirebaseService {
 
   public checkConcept(conceptCode: string, bokversion: string) {
     return this.http.get<string>(environment.API_URL + bokversion + '/concepts/' + conceptCode + '/id.json');
+  }
+
+  public getDeprecatedConcept(conceptCode: string): Observable<DeprecatedConcept | null> {
+    const userDocRef = doc(this.deprecatedConceptsCollection, conceptCode);
+    return from(getDoc(userDocRef)).pipe(
+      map(docSnap => {
+        if (docSnap.exists()) {
+          const data = docSnap.data()!;
+          const concept = new DeprecatedConcept(data);
+          return concept;
+        } else {
+          return null;
+        }
+      })
+    );
   }
 }
