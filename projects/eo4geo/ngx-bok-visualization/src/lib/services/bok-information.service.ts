@@ -4,6 +4,7 @@ import { BokFirebaseService } from "./bok-firebase.service";
 import { ParsedBokData } from "../model/parsed-bok-data.model";
 import { filter, Observable, map, of, tap, concatMap, switchMap } from "rxjs";
 import { CustomD3Node } from "../model/custom-d3-node.model";
+import { DeprecatedConcept } from "../model/DeprecatedConcept";
 
 @Injectable({
   providedIn: 'root',

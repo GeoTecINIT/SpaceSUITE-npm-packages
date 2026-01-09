@@ -1,4 +1,4 @@
-class DeprecatedConcept {
+export class DeprecatedConcept {
     code: string;
     name: string;
     color: string;

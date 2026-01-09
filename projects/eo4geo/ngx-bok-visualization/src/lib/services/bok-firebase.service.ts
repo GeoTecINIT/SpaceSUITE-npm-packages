@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, concatMap, filter, forkJoin, from, map, Observable, of, take, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { collection, CollectionReference, doc, Firestore, getDoc } from '@angular/fire/firestore';
+import { DeprecatedConcept } from '../model/DeprecatedConcept';
 
 @Injectable({
   providedIn: 'root',
