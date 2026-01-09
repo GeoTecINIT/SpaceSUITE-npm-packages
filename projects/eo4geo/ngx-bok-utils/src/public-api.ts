@@ -7,6 +7,8 @@ export * from './lib/components/header/header.component';
 export * from './lib/components/404/notFoundPage.component';
 export * from './lib/components/userPage/userPage.component';
 export * from './lib/components/organizationPage/organizationPage.component';
+export * from './lib/components/skillTags/skillTags.component';
+export * from './lib/model/tag';
 export * from './lib/guards/auth.guard';
 export * from './lib/guards/exitWithoutSaving.guard';
 export * from './lib/services/exitWithoutSaving.service';
