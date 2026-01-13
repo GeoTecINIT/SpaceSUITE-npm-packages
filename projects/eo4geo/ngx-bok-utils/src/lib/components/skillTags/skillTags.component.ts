@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import {ChangeDetectorRef, Component, ElementRef, Input, ViewChild} from '@angular/core';
 import { TagModule } from 'primeng/tag';
-import { fromEvent, map, Observable, Subscription } from 'rxjs';
+import { debounceTime, fromEvent, Subscription } from 'rxjs';
 import { TooltipModule } from 'primeng/tooltip';
 import { Tag } from '../../model/tag';
 
@@ -15,33 +15,32 @@ import { Tag } from '../../model/tag';
 export class SkillTagComponent {
   @Input() tags: Tag[] = [];
   @Input() direction: Direction = 'original';
+  @Input() compactBoKTags: boolean = true;
+  @Input() compactThreshold: number = 400;
   overflowTags: boolean = false;
 
   @ViewChild('bokDiv', { static: false }) bokDiv!: ElementRef<HTMLDivElement>;
 
-  resizeSub!: Subscription;
+  resizeObserver!: ResizeObserver;
 
   constructor(private cd: ChangeDetectorRef) {}
 
   ngAfterViewInit() {
-    this.resizeSub = fromEvent(window, 'resize')
-      .subscribe(() => this.checkOverflow());
-      
+    this.resizeObserver = new ResizeObserver(() => this.checkOverflow());
+    this.resizeObserver.observe(this.bokDiv.nativeElement);
     this.checkOverflow();
   }
 
   ngOnDestroy() {
-    this.resizeSub?.unsubscribe();
+    this.resizeObserver?.disconnect();
   }
 
   checkOverflow() {
-    const el = this.bokDiv.nativeElement;
-    let isOverflowing = false;
-    if (this.overflowTags) {
-      this.overflowTags = false;
-      this.cd.detectChanges();
-    }
-    isOverflowing = el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight;
+    if (!this.compactBoKTags) return;
+
+    const elWidth = this.bokDiv.nativeElement.offsetWidth;
+    let isOverflowing = elWidth < this.compactThreshold;
+
     if (this.overflowTags !== isOverflowing) {
       this.overflowTags = isOverflowing;
       this.cd.detectChanges();

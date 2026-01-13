@@ -19,7 +19,6 @@
     --p-tag-primary-color: var(--primary-color);
     cursor: pointer;
     text-decoration: none;
-    white-space: nowrap;
 }
 
 .bok-tag:hover {
