@@ -36,7 +36,9 @@ export class SkillTagComponent {
   ngAfterViewChecked() {
     if (this.notify) {
       this.notify = false;
-      this.layoutUpdated.emit();
+      requestAnimationFrame(() => {
+        this.layoutUpdated.emit();
+      });
     }
   }
 
@@ -47,14 +49,15 @@ export class SkillTagComponent {
   checkOverflow() {
     if (!this.compactBoKTags) return;
 
-    const elWidth = this.bokDiv.nativeElement.offsetWidth;
-    let isOverflowing = elWidth < this.compactThreshold;
+    this.ngZone.run(() => {
+      const elWidth = this.bokDiv.nativeElement.offsetWidth;
+      let isOverflowing = elWidth < this.compactThreshold;
 
-    if (this.overflowTags !== isOverflowing) {
-      this.overflowTags = isOverflowing;
-      this.notify = true;
-      this.cd.detectChanges();
-    }
+      if (this.overflowTags !== isOverflowing) {
+        this.overflowTags = isOverflowing;
+        this.notify = true;
+      }
+    });
   }
 
   getBokColor(color: string): string {
