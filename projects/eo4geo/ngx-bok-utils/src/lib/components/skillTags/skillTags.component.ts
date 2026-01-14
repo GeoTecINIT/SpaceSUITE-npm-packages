@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
-import {ChangeDetectorRef, Component, ElementRef, Input, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, NgZone, Output, ViewChild} from '@angular/core';
 import { TagModule } from 'primeng/tag';
-import { debounceTime, fromEvent, Subscription } from 'rxjs';
 import { TooltipModule } from 'primeng/tooltip';
 import { Tag } from '../../model/tag';
 
@@ -23,12 +22,22 @@ export class SkillTagComponent {
 
   resizeObserver!: ResizeObserver;
 
-  constructor(private cd: ChangeDetectorRef) {}
+  @Output() layoutUpdated : EventEmitter<void> = new EventEmitter();
+  private notify: boolean = false;
+
+  constructor(private cd: ChangeDetectorRef, private ngZone: NgZone) {}
 
   ngAfterViewInit() {
     this.resizeObserver = new ResizeObserver(() => this.checkOverflow());
     this.resizeObserver.observe(this.bokDiv.nativeElement);
     this.checkOverflow();
+  }
+
+  ngAfterViewChecked() {
+    if (this.notify) {
+      this.notify = false;
+      this.layoutUpdated.emit();
+    }
   }
 
   ngOnDestroy() {
@@ -43,6 +52,7 @@ export class SkillTagComponent {
 
     if (this.overflowTags !== isOverflowing) {
       this.overflowTags = isOverflowing;
+      this.notify = true;
       this.cd.detectChanges();
     }
   }
