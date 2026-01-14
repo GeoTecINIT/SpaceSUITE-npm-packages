@@ -1,5 +1,5 @@
 <div #bokDiv [class]="getStyleClass()">
-    <ng-content *ngFor="let tag of tags">
+    <ng-container *ngFor="let tag of tags">
         <p-tag *ngIf="tag.variant != 'bok' else bokTag" 
             [class]="tag.variant == 'secondary' ? 'secondary-tag' : 'primary-tag'" 
             [rounded]="true" 
@@ -20,5 +20,6 @@
                 />
             </div>
         </ng-template>
-    </ng-content>
+    </ng-container>
+    <ng-content></ng-content>
 </div>
