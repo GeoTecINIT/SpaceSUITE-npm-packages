@@ -35,7 +35,9 @@
         
         <p-button #menuButton (click)="hideMenu = !hideMenu" class="md:hidden flex align-items-center custom-header-button ml-auto" icon="pi pi-bars" aria-label="Menu"></p-button>
     </div>
-    <p-tieredmenu #menu [hidden]="hideMenu" [model]="buttonItems" class="md:hidden custom-p-tieredmenu"/>
+    @if (!hideMenu) {
+        <p-tieredmenu #menu [model]="buttonItems" class="md:hidden custom-p-tieredmenu"/>
+    }
 </div>
 
 <sessionModal [(visible)]="showLoginModal"></sessionModal>
