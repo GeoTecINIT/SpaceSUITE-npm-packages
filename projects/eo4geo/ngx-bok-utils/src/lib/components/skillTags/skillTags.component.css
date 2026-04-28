@@ -28,7 +28,7 @@
 .url-tag {
     font-size: .8rem;
     --p-tag-primary-color: var(--primary-color);
-    cursor: default;
+    cursor: pointer;
     text-decoration: none;
     background: color-mix(in srgb, var(--secondary-color) 50%, rgba(0, 0, 0, 0) 50%);
 }
