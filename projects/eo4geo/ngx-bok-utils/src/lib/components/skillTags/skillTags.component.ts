@@ -64,6 +64,10 @@ export class SkillTagComponent {
     window.open('https://bok.eo4geo.eu/' + code);
   }
 
+  onClickUrl(url: string) {
+    window.open(url);
+  }
+
   getStyleClass() {
     switch(this.direction){
       case 'original':

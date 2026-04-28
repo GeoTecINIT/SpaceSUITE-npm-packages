@@ -25,6 +25,22 @@
     --p-tag-primary-color: white;
 }
 
+.url-tag {
+    font-size: .8rem;
+    --p-tag-primary-color: var(--primary-color);
+    cursor: default;
+    text-decoration: none;
+    background: color-mix(in srgb, var(--secondary-color) 50%, rgba(0, 0, 0, 0) 50%);
+}
+
+.url-tag:hover {
+    --p-tag-primary-color: white;
+}
+
+.bok-tag:hover {
+    --p-tag-primary-color: white;
+}
+
 ::ng-deep .custom-p-tooltip-text {
     --p-tooltip-background: var(--danger-color) !important;
 }

@@ -1,12 +1,19 @@
 <div #bokDiv [class]="getStyleClass()">
     <ng-container *ngFor="let tag of tags">
-        <p-tag *ngIf="tag.variant != 'bok' else bokTag" 
-            [class]="tag.variant == 'secondary' ? 'secondary-tag' : 'primary-tag'" 
-            [rounded]="true" 
-            [value]="tag.label"
-        />
-        <ng-template #bokTag>
-            <div 
+        <ng-container [ngSwitch]="tag.variant">
+            <p-tag *ngSwitchCase="'primary'"
+                class="primary-tag" 
+                [rounded]="true" 
+                [value]="tag.label"
+            />
+
+            <p-tag *ngSwitchCase="'secondary'"
+                class="secondary-tag" 
+                [rounded]="true" 
+                [value]="tag.label"
+            />
+
+            <div *ngSwitchCase="'bok'"
             [pTooltip]="overflowTags ? tag.tooltip : undefined" 
             tooltipPosition="top" 
             [tooltipStyleClass]="getTooltipClass(tag)"
@@ -19,7 +26,20 @@
                     [value]="overflowTags ? tag.label : '[' + tag.label + '] ' + tag.tooltip"
                 />
             </div>
-        </ng-template>
+
+            <p-tag *ngSwitchCase="'url'"
+                class="url-tag" 
+                [rounded]="true" 
+                (click)="onClickUrl(tag.url ?? '')" 
+                [value]="tag.label"
+            />
+
+            <p-tag *ngSwitchDefault
+                class="primary-tag" 
+                [rounded]="true" 
+                [value]="tag.label"
+            />
+        </ng-container>
     </ng-container>
     <ng-content></ng-content>
 </div>
