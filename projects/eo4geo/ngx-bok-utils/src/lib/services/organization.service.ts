@@ -28,11 +28,11 @@ export class OrganizationService {
     this.adminOrganizationMessagesSource.next(message)
   }
 
-  getOrganizations(): Observable<{ _id: string, name: string }[]> {
-    return collectionData(this.orgCollection) as Observable<{ _id: string, name: string }[]>;
+  getOrganizations(): Observable<{ _id: string, name: string, isPublic: boolean }[]> {
+    return collectionData(this.orgCollection) as Observable<{ _id: string, name: string, isPublic: boolean }[]>;
   }
 
-  getUserOrganizations(): Observable<{ _id: string, name: string; description: string, email: string, isAdmin: boolean }[]> {
+  getUserOrganizations(): Observable<{ _id: string, name: string; description: string, email: string, isAdmin: boolean, isPublic: boolean }[]> {
     return authState(this.auth).pipe(
       switchMap(user => {
         if (!user) return of(null);
@@ -50,7 +50,7 @@ export class OrganizationService {
     );
   }
 
-  private getOrganizationInfo(orgId: string): Observable<{ _id: string, name: string; description: string, email:string, isAdmin: boolean }> {
+  private getOrganizationInfo(orgId: string): Observable<{ _id: string, name: string; description: string, email:string, isAdmin: boolean, isPublic: boolean }> {
     const orgDocRef: DocumentReference = doc(this.orgCollection, orgId);
     return docData(orgDocRef).pipe(
       first(),
@@ -59,7 +59,8 @@ export class OrganizationService {
         name: document?.['name'],
         description: document?.['description'],
         email: document?.['contact'],
-        isAdmin: Array.isArray(document?.['admin']) && document['admin'].includes(this.auth.currentUser?.uid)
+        isAdmin: Array.isArray(document?.['admin']) && document['admin'].includes(this.auth.currentUser?.uid),
+        isPublic: document?.['isPublic']
       }))
     );
   }
@@ -82,6 +83,22 @@ export class OrganizationService {
     );
   }
 
+  getOrganizationPendingUsers(orgId: string): Observable<{ _id: string, name: string; email: string, isAdmin: boolean }[]> {
+    const orgDocRef = doc(this.orgCollection, orgId);
+    const organizationUsersSnapshot = docData(orgDocRef) as Observable<{ pending: string[] }>;
+    return organizationUsersSnapshot.pipe(
+      concatMap(users => {
+        const pendingUsers$ = users.pending.map(uid =>
+          this.getUserInfo(uid).pipe(
+            take(1),
+            map(user => ({ ...user, isAdmin: false }))
+          )
+        );
+        return forkJoin(pendingUsers$);
+      })
+    );
+  }
+
   private getUserInfo(uid: string): Observable<{ _id: string, name: string; email: string }> {
     const orgDocRef: DocumentReference = doc(this.userCollection, uid);
     return docData(orgDocRef) as Observable<{ _id: string, name: string; email: string }>;
@@ -93,6 +110,78 @@ export class OrganizationService {
     return organizationUsersSnapshot.pipe(
       map(data => data.divisions)
     );
+  }
+
+  requestAccessToOrganization(orgId: string): Observable<void> {
+    const orgDocRef = doc(this.orgCollection, orgId);
+    const organizationUsersSnapshot = docData(orgDocRef) as Observable<{ admin: string[], regular: string[], pending: string[] }>;
+    return new Observable<void>((observer) => {
+      organizationUsersSnapshot.pipe(take(1)).subscribe(async (organizationUsers) => {
+        if (!organizationUsers) {
+          observer.error(new Error('Organization users data is unavailable.'));
+          return;
+        }
+        const currentUserId = this.auth.currentUser?.uid;
+        if (!currentUserId) {
+          observer.error(new Error('Current user is not authenticated.'));
+          return;
+        }
+        if (organizationUsers.regular.includes(currentUserId) && organizationUsers.admin.includes(currentUserId)) {
+          observer.error(new Error('You cannot join an organization to which you already belong.'));
+          return;
+        }
+        await updateDoc(orgDocRef, {
+          pending: [...organizationUsers.pending, currentUserId]
+        });
+        observer.next();
+        observer.complete();
+      });
+    });
+  }
+
+  addPendingUserToOrganization(orgId: string, userId: string): Observable<void> {
+    const orgDocRef = doc(this.orgCollection, orgId);
+    const organizationUsersSnapshot = docData(orgDocRef) as Observable<{ regular: string[], pending: string[] }>;
+    return new Observable<void>((observer) => {
+      organizationUsersSnapshot.pipe(take(1)).subscribe(async (organizationUsers) => {
+        if (!organizationUsers) {
+          observer.error(new Error('Organization users data is unavailable.'));
+          return;
+        }
+        if (organizationUsers.pending.includes(userId)) {
+          observer.error(new Error('The selected user did not request to join the organization.'));
+          return;
+        }
+        await updateDoc(orgDocRef, {
+          pending: [...organizationUsers.pending.filter(value => value != userId)],
+          regular: [...organizationUsers.regular, userId]
+        });
+        observer.next();
+        observer.complete();
+      });
+    });
+  }
+
+  removePendingUserFromOrganization(orgId: string, userId: string): Observable<void> {
+    const orgDocRef = doc(this.orgCollection, orgId);
+    const organizationUsersSnapshot = docData(orgDocRef) as Observable<{ regular: string[], pending: string[] }>;
+    return new Observable<void>((observer) => {
+      organizationUsersSnapshot.pipe(take(1)).subscribe(async (organizationUsers) => {
+        if (!organizationUsers) {
+          observer.error(new Error('Organization users data is unavailable.'));
+          return;
+        }
+        if (organizationUsers.pending.includes(userId)) {
+          observer.error(new Error('The selected user did not request to join the organization.'));
+          return;
+        }
+        await updateDoc(orgDocRef, {
+          pending: [...organizationUsers.pending.filter(value => value != userId)],
+        });
+        observer.next();
+        observer.complete();
+      });
+    });
   }
   
   leaveOrganization(orgId: string): Observable<void> {

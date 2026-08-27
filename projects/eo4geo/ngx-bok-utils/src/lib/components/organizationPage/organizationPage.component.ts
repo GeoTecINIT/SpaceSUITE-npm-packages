@@ -26,11 +26,11 @@ import { Router } from "@angular/router";
 })
 export class OrganizationPageComponent {
 
-  userOrganizations$!: Observable<{_id: string, name: string, description: string, email:string, isAdmin: boolean}[]>;
+  userOrganizations$!: Observable<{_id: string, name: string, description: string, email:string, isAdmin: boolean, isPublic: boolean}[]>;
   adminMessageSubscription!: Subscription;
 
-  organizations$!: Observable<{_id: string, name: string}[]>;
-  selectedOrganization: {_id: string, name: string} | undefined;
+  organizations$!: Observable<{_id: string, name: string, isPublic: boolean}[]>;
+  selectedOrganization: {_id: string, name: string, isPublic: boolean} | undefined;
 
   duplicatedOrg: boolean = false;
 
@@ -51,7 +51,8 @@ export class OrganizationPageComponent {
       map(orgs => {
         const organizations = orgs.map(org => ({
           _id: org._id,
-          name: org.name.trim().charAt(0).toUpperCase() + org.name.trim().slice(1)
+          name: org.name.trim().charAt(0).toUpperCase() + org.name.trim().slice(1),
+          isPublic: org.isPublic
         }));
         return organizations.sort((a, b) => a.name.localeCompare(b.name));
       })
@@ -129,30 +130,59 @@ export class OrganizationPageComponent {
         const orgId: string = this.selectedOrganization!._id;
         const orgName: string = this.selectedOrganization!.name;
         let isSuccess = true;
-        return this.orgService.joinOrganization(orgId).pipe(
-          catchError((error) => {
-            isSuccess = false;
-            this.messageService.add({ 
-              severity: 'error', 
-              summary: 'Error', 
-              detail: error.message ?? 'Something went wrong. Try again later or contact the administrator.', 
-              life: 3000, 
-              closable: true 
-            });
-            return of(null);
-          }),
-          finalize(() => {
-            if (isSuccess) {
+        if (!this.selectedOrganization?.isPublic) {
+          return this.orgService.requestAccessToOrganization(orgId).pipe(
+            catchError((error) => {
+              isSuccess = false;
               this.messageService.add({ 
-                severity: 'info', 
-                summary: 'Info', 
-                detail: `You joined ${orgName} without problems.`,
+                severity: 'error', 
+                summary: 'Error', 
+                detail: error.message ?? 'Something went wrong. Try again later or contact the administrator.', 
                 life: 3000, 
                 closable: true 
               });
-            }
-          })
-        )
+              return of(null);
+            }),
+            finalize(() => {
+              if (isSuccess) {
+                // TODO - Send email
+                this.messageService.add({ 
+                  severity: 'info', 
+                  summary: 'Info', 
+                  detail: `You requested access to ${orgName} without problems.`,
+                  life: 3000, 
+                  closable: true 
+                });
+              }
+            })
+          )
+        }
+        else {
+          return this.orgService.joinOrganization(orgId).pipe(
+            catchError((error) => {
+              isSuccess = false;
+              this.messageService.add({ 
+                severity: 'error', 
+                summary: 'Error', 
+                detail: error.message ?? 'Something went wrong. Try again later or contact the administrator.', 
+                life: 3000, 
+                closable: true 
+              });
+              return of(null);
+            }),
+            finalize(() => {
+              if (isSuccess) {
+                this.messageService.add({ 
+                  severity: 'info', 
+                  summary: 'Info', 
+                  detail: `You joined ${orgName} without problems.`,
+                  life: 3000, 
+                  closable: true 
+                });
+              }
+            })
+          )
+        }
       })
     ).subscribe();
   }

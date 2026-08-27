@@ -29,6 +29,7 @@ export class OrganizationAdminComponent {
 
   @Input() organization!: {_id: string, name: string, description: string, email:string, isAdmin: boolean};
   users: { _id: string; name: string; email: string; isAdmin: boolean;}[] = [];
+  pendingUsers: { _id: string; name: string; email: string; isAdmin: boolean;}[] = [];
   skelletonData: any[] = Array.from({ length: 5 }).map(() => {});
   divisions: string[] = [];
 
@@ -41,6 +42,7 @@ export class OrganizationAdminComponent {
   userError: boolean = false;
 
   private usersSubscription!: Subscription;
+  private pendingUsersSubscription!: Subscription;
   private divisionsSubscription!: Subscription;
 
   inplaceIndicator: boolean = false;
@@ -49,6 +51,7 @@ export class OrganizationAdminComponent {
   
   ngOnInit() {
     this.usersSubscription = this.orgService.getOrganizationUsers(this.organization._id).subscribe(newUsers => this.users = newUsers.sort((a, b) => b.email.localeCompare(a.email)));
+    this.pendingUsersSubscription = this.orgService.getOrganizationPendingUsers(this.organization._id).subscribe(newUsers => this.pendingUsers = newUsers.sort((a, b) => b.email.localeCompare(a.email)));
     this.divisionsSubscription = this.orgService.getOrganizationDivisions(this.organization._id).subscribe(newDivisions => this.divisions = newDivisions);
   }
 
@@ -397,6 +400,64 @@ export class OrganizationAdminComponent {
             severity: 'info', 
             summary: 'Info', 
             detail: `You deleted ${this.organization.name} without problems.`,
+            life: 3000, 
+            closable: true 
+          });
+        }
+      })
+    ).subscribe();
+  }
+
+  acceptPendingUser(userId: string, userName: string) {
+    let isSuccess = true;
+    this.orgService.addPendingUserToOrganization(this.organization._id, userId).pipe(
+      catchError(error => {
+        isSuccess = false;
+        this.orgService.emitMessage({ 
+          severity: 'error', 
+          summary: 'Error', 
+          detail: error.message ?? 'Something went wrong. Try again later or contact the administrator.', 
+          life: 3000, 
+          closable: true 
+        });
+        return of(null);
+      }),
+      finalize(() => {
+        if (isSuccess) {
+          // TODO - notify user
+          this.orgService.emitMessage({ 
+            severity: 'info', 
+            summary: 'Info', 
+            detail: `${userName ?? userId} is now part of ${this.organization.name}.`,
+            life: 3000, 
+            closable: true 
+          });
+        }
+      })
+    ).subscribe();
+  }
+
+  rejectPendingUser(userId: string, userName: string) {
+    let isSuccess = true;
+    this.orgService.removePendingUserFromOrganization(this.organization._id, userId).pipe(
+      catchError(error => {
+        isSuccess = false;
+        this.orgService.emitMessage({ 
+          severity: 'error', 
+          summary: 'Error', 
+          detail: error.message ?? 'Something went wrong. Try again later or contact the administrator.', 
+          life: 3000, 
+          closable: true 
+        });
+        return of(null);
+      }),
+      finalize(() => {
+        if (isSuccess) {
+          // TODO - notify user
+          this.orgService.emitMessage({ 
+            severity: 'info', 
+            summary: 'Info', 
+            detail: `${userName ?? userId} is now part of ${this.organization.name}.`,
             life: 3000, 
             closable: true 
           });

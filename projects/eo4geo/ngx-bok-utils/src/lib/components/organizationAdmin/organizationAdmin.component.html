@@ -47,8 +47,36 @@
                 </p-table>
             </p-accordion-content>
         </p-accordion-panel>
-    
+
         <p-accordion-panel value="2">
+            <p-accordion-header>Pending Users</p-accordion-header>
+            <p-accordion-content>
+                <p-table [value]="pendingUsers" [paginator]="true" [rows]="5" class="custom-table">
+                    <ng-template #header>
+                        <tr>
+                            <th>Email</th>
+                            <th>Name</th>
+                            <th style="width: 5rem"></th>
+                            <th style="width: 5rem"></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template #body let-user>
+                        <tr >
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.name }}</td>
+                            <td>
+                                <p-button class="flex accept-button" variant="text" rounded="true" size="large" icon="pi pi-check" (onClick)="acceptPendingUser(user._id, user.name)"/>
+                            </td>
+                            <td>
+                                <p-button class="flex trash-button" variant="text" rounded="true" size="large" icon="pi pi-times" (onClick)="rejectPendingUser(user._id, user.name)"/>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </p-accordion-content>
+        </p-accordion-panel>
+    
+        <p-accordion-panel value="3">
             <p-accordion-header>Divisions</p-accordion-header>
             <p-accordion-content>
                 <div class="flex flex-wrap my-3 justify-content-center align-items-center gap-4">
