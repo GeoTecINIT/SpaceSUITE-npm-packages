@@ -49,7 +49,12 @@
         </p-accordion-panel>
 
         <p-accordion-panel value="2">
-            <p-accordion-header>Pending Users</p-accordion-header>
+            <p-accordion-header>
+                <div>
+                    <span>Pending Users</span>
+                    <p-badge [value]="pendingUsers.length" [badgeDisabled]="pendingUsers.length == 0"/>
+                </div>
+            </p-accordion-header>
             <p-accordion-content>
                 <p-table [value]="pendingUsers" [paginator]="true" [rows]="5" class="custom-table">
                     <ng-template #header>
@@ -117,5 +122,7 @@
 </div>
 
 <ng-template #AdminContent>
-    <p class="mb-0 custom-inplace-display" (click)="inplaceIndicator = true">Admin Content</p>
+    <p-overlaybadge [value]="pendingUsers.length" [badgeDisabled]="pendingUsers.length == 0">
+        <p class="mb-0 custom-inplace-display" (click)="inplaceIndicator = true">Admin Content</p>
+    </p-overlaybadge>
 </ng-template>

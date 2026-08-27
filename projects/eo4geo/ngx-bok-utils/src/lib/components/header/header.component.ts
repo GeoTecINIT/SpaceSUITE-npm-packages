@@ -1,21 +1,24 @@
 import { CommonModule } from '@angular/common';
-import {Component, EventEmitter, HostListener, inject, Input, Output} from '@angular/core';
+import {Component, EventEmitter, HostListener, inject, Input, Output, signal, WritableSignal} from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { TieredMenuModule } from 'primeng/tieredmenu';
 import { AvatarModule } from 'primeng/avatar';
 import { AvatarGroupModule } from 'primeng/avatargroup';
-import { filter, Subscription } from 'rxjs';
+import { filter, forkJoin, map, Subscription, switchMap } from 'rxjs';
 import { SessionModalComponent } from "../signInModal/sessionModal.component";
 import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
+import { OrganizationService } from '../../services/organization.service';
+import { OverlayBadgeModule } from 'primeng/overlaybadge';
+import { BadgeModule } from 'primeng/badge';
 
 @Component({
   standalone: true,
   selector: 'header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
-  imports: [ButtonModule, TieredMenuModule, CommonModule, AvatarModule, AvatarGroupModule, SessionModalComponent],
+  imports: [ButtonModule, TieredMenuModule, CommonModule, AvatarModule, AvatarGroupModule, SessionModalComponent, OverlayBadgeModule, BadgeModule],
 })
 export class HeaderComponent {
   @Input() items: MenuItem[] = [ 
@@ -131,9 +134,12 @@ export class HeaderComponent {
 
   showLoginModal: boolean = false;
 
-  private userStateSubscription!: Subscription;
+  badgeNumber: WritableSignal<number> = signal(0);
 
-  constructor(private userService: UserService, private router: Router) {}
+  private userStateSubscription!: Subscription;
+  private userAdminOrgsSubscription!: Subscription;
+
+  constructor(private userService: UserService, private orgService: OrganizationService, private router: Router) {}
 
   ngOnInit() {
     this.userStateSubscription = this.userService.getUserState().pipe(filter(value => value != undefined)).subscribe(({ logged, nameInitial }) => {
@@ -144,10 +150,26 @@ export class HeaderComponent {
         this.buttonItems = this.items.concat(this.unregisteredUserItems);
       }
     });
+    this.userAdminOrgsSubscription = this.orgService.getUserOrganizations().pipe(
+      map(orgs => {
+        return orgs.filter(org => org.isAdmin);
+      }),
+      switchMap(adminOrgs => {
+        const orgsPendingUsers$ = adminOrgs.map(org => this.orgService.getOrganizationPendingUsers(org._id));
+        return forkJoin(orgsPendingUsers$)
+      }),
+    ).subscribe(orgsPendingUsers => {
+        let orgsWithPendingUsers: number = 0;
+        orgsPendingUsers.forEach(orgPendingUsers => {
+          if (orgPendingUsers.length > 0) orgsWithPendingUsers++;
+        })
+        this.badgeNumber.set(orgsWithPendingUsers);
+    });
   }
 
   ngOnDestroy() {
     this.userStateSubscription?.unsubscribe();
+    this.userAdminOrgsSubscription?.unsubscribe();
   }
 
   async logout() {
