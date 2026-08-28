@@ -317,7 +317,7 @@ export class OrganizationService {
     });
   }
 
-  createOrganization(name: string, description: string, contact: string) {
+  createOrganization(name: string, description: string, contact: string, isPublic: boolean) {
     const currentUserId = this.auth.currentUser?.uid;
     if (!currentUserId) {
       throw new Error('Current user is not authenticated.');
@@ -333,7 +333,7 @@ export class OrganizationService {
       adminUser: [],
       regularUser: [],
       pendingUser: [],
-      isPublic: false,
+      isPublic: isPublic,
       contact,
       divisions: [],
     };

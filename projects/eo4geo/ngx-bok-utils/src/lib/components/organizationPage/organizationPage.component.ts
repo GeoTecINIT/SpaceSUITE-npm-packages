@@ -226,7 +226,7 @@ export class OrganizationPageComponent {
     });
   }
 
-  createOrganization(createData: {name: string | null, description: string | null, contact: string | null}) {
+  createOrganization(createData: {name: string | null, description: string | null, contact: string | null, isPublic: boolean}) {
     if (!createData.name?.trim() || !createData.description?.trim() || !createData.contact?.trim()) {
       this.messageService.add({ 
         severity: 'warn', 
@@ -239,7 +239,7 @@ export class OrganizationPageComponent {
       return;
     }
     let isSuccess = true;
-    this.orgService.createOrganization(createData.name, createData.description, createData.contact).pipe(
+    this.orgService.createOrganization(createData.name, createData.description, createData.contact, createData.isPublic).pipe(
       catchError((error) => {
         isSuccess = false;
         this.messageService.add({ 

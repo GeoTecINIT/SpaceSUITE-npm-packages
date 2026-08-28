@@ -25,5 +25,9 @@
         </p-iconfield>
         <label for="contact">Contact</label>
     </p-floatlabel>
+
+    <div class="flex">
+        <p-selectbutton [(ngModel)]="newIsPublic" [options]="isPublicValues" class="custom-togglebutton" [allowEmpty]="false" optionLabel="label" optionValue="value" />
+    </div>
 </div>
 <p-button class="custom-button ml-2" [label]="buttonLabel" size="small" [disabled]="descriptionFormModified()" (onClick)="updateDescription()"/>

@@ -7,13 +7,14 @@ import { IconFieldModule } from "primeng/iconfield";
 import { InputTextModule } from "primeng/inputtext";
 import { FloatLabelModule } from "primeng/floatlabel";
 import { TextareaModule } from 'primeng/textarea';
+import { SelectButtonModule } from "primeng/selectbutton";
 
 @Component({
   standalone: true,
   selector: 'organization-form',
   templateUrl: './organizationForm.component.html',
   styleUrls: ['./organizationForm.component.css'],
-  imports: [ButtonModule, CommonModule, FormsModule, InputIconModule, IconFieldModule, InputTextModule, FloatLabelModule, TextareaModule],
+  imports: [ButtonModule, CommonModule, FormsModule, InputIconModule, IconFieldModule, InputTextModule, FloatLabelModule, TextareaModule, SelectButtonModule],
 })
 export class OrganizationFormComponent {
 
@@ -26,20 +27,27 @@ export class OrganizationFormComponent {
     }
     return true
   };
-  @Output() formChange: EventEmitter<{name: string | null, description: string | null, contact: string | null}> = new EventEmitter();
+  @Output() formChange: EventEmitter<{name: string | null, description: string | null, contact: string | null, isPublic: boolean}> = new EventEmitter();
 
   newName: string = "";
   newDescription: string = "";
   newContact: string = "";
+  newIsPublic: boolean = false;
 
   emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   isValidEmail = (email: string): boolean => this.emailRegex.test(email);
+
+  isPublicValues = [
+      { label: 'Public', value: true },
+      { label: 'Private', value: false }
+    ];
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['organization'] && this.organization) {
       this.newName = changes['organization'].currentValue.name;
       this.newDescription = changes['organization'].currentValue.description;
       this.newContact = changes['organization'].currentValue.email;
+      this.newIsPublic = changes['organization'].currentValue.isPublic;
     }
   }
 
@@ -52,7 +60,8 @@ export class OrganizationFormComponent {
     const updateInfo = {
       name: this.newName != this.organization.name ? this.newName : null,
       description: this.newDescription != this.organization.description ? this.newDescription : null,
-      contact: this.newContact != this.organization.email ? this.newContact : null
+      contact: this.newContact != this.organization.email ? this.newContact : null,
+      isPublic: false
     }
     this.formChange.emit(updateInfo);
   }

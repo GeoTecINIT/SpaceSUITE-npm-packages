@@ -49,3 +49,22 @@
 .error-textarea {
     border-color: var(--danger-color) !important;
 }
+
+::ng-deep .p-selectbutton {
+    flex: auto;
+}
+
+::ng-deep p-togglebutton {
+    flex: auto;
+}
+
+::ng-deep .p-togglebutton {
+    flex: auto;
+}
+
+.custom-togglebutton {
+    --p-togglebutton-checked-color: var(--primary-color);
+    --p-togglebutton-icon-checked-color: var(--primary-color);
+    --p-togglebutton-hover-color: var(--primary-color);
+    --p-togglebutton-icon-hover-color: var(--primary-color);
+}
