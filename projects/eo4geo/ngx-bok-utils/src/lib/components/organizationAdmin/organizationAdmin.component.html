@@ -52,7 +52,7 @@
             <p-accordion-header>
                 <div>
                     <span>Pending Users</span>
-                    <p-badge [value]="pendingUsers.length" [badgeDisabled]="pendingUsers.length == 0" [badgeSize]="'small'"/>
+                    <p-badge class="ml-2 custom-badge" [value]="pendingUsers.length" [badgeDisabled]="pendingUsers.length == 0" [badgeSize]="'small'"/>
                 </div>
             </p-accordion-header>
             <p-accordion-content>
@@ -122,8 +122,8 @@
 </div>
 
 <ng-template #AdminContent>
-    <div class="flex gap-2">
-        <p class="mb-0 w-min custom-inplace-display" (click)="inplaceIndicator = true">Admin Content</p>
-        <p-badge [value]="pendingUsers.length" [badgeDisabled]="pendingUsers.length == 0"/>
+    <div class="flex gap-2 mt-1">
+        <p class="m-0 w-min custom-inplace-display" (click)="inplaceIndicator = true">Admin Content</p>
+        <p-badge class="custom-badge" [value]="pendingUsers.length" [badgeDisabled]="pendingUsers.length == 0" [badgeSize]="'small'"></p-badge>
     </div>
 </ng-template>

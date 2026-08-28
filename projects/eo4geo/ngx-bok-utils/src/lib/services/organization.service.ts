@@ -159,7 +159,7 @@ export class OrganizationService {
         observer.next();
         observer.complete();
       });
-    });
+    }).pipe(concatMap(() => this.updateUserOrganizations(orgId, this.addItem, userId)));
   }
 
   removePendingUserFromOrganization(orgId: string, userId: string): Observable<void> {

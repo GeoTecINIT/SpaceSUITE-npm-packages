@@ -100,3 +100,7 @@
 .custom-inplace-display:focus {
     color: var(--hover-color);
 }
+
+.custom-badge {
+    --p-badge-primary-background: var(--secondary-color);
+}
