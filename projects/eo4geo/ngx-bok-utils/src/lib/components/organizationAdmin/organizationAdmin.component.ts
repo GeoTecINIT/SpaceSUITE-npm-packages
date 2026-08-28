@@ -16,7 +16,6 @@ import { FloatLabelModule } from "primeng/floatlabel";
 import { UserService } from "../../services/user.service";
 import { OrganizationFormComponent } from "../organizationForm/organizationForm.component";
 import { BadgeModule } from 'primeng/badge';
-import { OverlayBadgeModule } from 'primeng/overlaybadge';
 
 @Component({
   standalone: true,
@@ -24,7 +23,7 @@ import { OverlayBadgeModule } from 'primeng/overlaybadge';
   templateUrl: './organizationAdmin.component.html',
   styleUrls: ['./organizationAdmin.component.css'],
   imports: [ButtonModule, CommonModule, TableModule, ToggleSwitchModule, FormsModule, AccordionModule, InputIconModule,
-    IconFieldModule, InputTextModule, FloatLabelModule, ConfirmDialogModule, OrganizationFormComponent, BadgeModule, OverlayBadgeModule],
+    IconFieldModule, InputTextModule, FloatLabelModule, ConfirmDialogModule, OrganizationFormComponent, BadgeModule],
   providers: [ConfirmationService]
 })
 export class OrganizationAdminComponent {

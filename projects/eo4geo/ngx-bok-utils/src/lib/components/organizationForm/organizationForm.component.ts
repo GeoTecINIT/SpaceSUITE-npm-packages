@@ -47,7 +47,7 @@ export class OrganizationFormComponent {
       this.newName = changes['organization'].currentValue.name;
       this.newDescription = changes['organization'].currentValue.description;
       this.newContact = changes['organization'].currentValue.email;
-      this.newIsPublic = changes['organization'].currentValue.isPublic;
+      this.newIsPublic = changes['organization'].currentValue.isPublic || false;
     }
   }
 

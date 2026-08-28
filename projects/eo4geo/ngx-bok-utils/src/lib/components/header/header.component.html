@@ -25,7 +25,7 @@
                 </ng-template>
             </div>
             <div *ngIf="login" class="hidden md:flex align-items-center justify-content-center">
-                <p-overlaybadge [value]="badgeNumber()" [badgeDisabled]="badgeNumber() == 0">
+                <p-overlaybadge *ngIf="logged; else loginButton" [value]="badgeNumber()" [badgeDisabled]="badgeNumber() == 0">
                     <p-avatar [label]="nameInitial" class="custom-p-avatar" shape="circle" (click)="userMenu.toggle($event)"></p-avatar>
                 </p-overlaybadge>
             </div>

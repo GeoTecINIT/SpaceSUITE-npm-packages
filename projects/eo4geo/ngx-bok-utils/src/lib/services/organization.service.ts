@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Auth, authState } from '@angular/fire/auth';
 import { Firestore, collection, CollectionReference, doc, updateDoc, docData, DocumentReference, collectionData, setDoc, deleteDoc } from '@angular/fire/firestore';
 import { ToastMessageOptions } from 'primeng/api';
-import { catchError, concatMap, first, forkJoin, from, map, Observable, of, Subject, take, combineLatest, switchMap, distinctUntilChanged } from 'rxjs';
+import { catchError, concatMap, first, forkJoin, from, map, Observable, of, Subject, take, combineLatest, switchMap, distinctUntilChanged, defaultIfEmpty } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -78,7 +78,7 @@ export class OrganizationService {
               this.getUserInfo(uid).pipe(take(1), map(user => ({ ...user, isAdmin: false })))
           );
 
-          return forkJoin([...adminUsers$, ...regularUsers$]);
+          return forkJoin([...adminUsers$, ...regularUsers$]).pipe(defaultIfEmpty([]));
       })
     );
   }
@@ -94,7 +94,7 @@ export class OrganizationService {
             map(user => ({ ...user, isAdmin: false }))
           )
         );
-        return forkJoin(pendingUsers$);
+        return forkJoin([...pendingUsers$]).pipe(defaultIfEmpty([]));
       })
     );
   }
@@ -148,7 +148,7 @@ export class OrganizationService {
           observer.error(new Error('Organization users data is unavailable.'));
           return;
         }
-        if (organizationUsers.pending.includes(userId)) {
+        if (!organizationUsers.pending.includes(userId)) {
           observer.error(new Error('The selected user did not request to join the organization.'));
           return;
         }
@@ -171,7 +171,7 @@ export class OrganizationService {
           observer.error(new Error('Organization users data is unavailable.'));
           return;
         }
-        if (organizationUsers.pending.includes(userId)) {
+        if (!organizationUsers.pending.includes(userId)) {
           observer.error(new Error('The selected user did not request to join the organization.'));
           return;
         }

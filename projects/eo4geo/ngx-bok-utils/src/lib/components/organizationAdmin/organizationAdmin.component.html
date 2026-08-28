@@ -52,7 +52,7 @@
             <p-accordion-header>
                 <div>
                     <span>Pending Users</span>
-                    <p-badge [value]="pendingUsers.length" [badgeDisabled]="pendingUsers.length == 0"/>
+                    <p-badge [value]="pendingUsers.length" [badgeDisabled]="pendingUsers.length == 0" [badgeSize]="'small'"/>
                 </div>
             </p-accordion-header>
             <p-accordion-content>
@@ -122,7 +122,8 @@
 </div>
 
 <ng-template #AdminContent>
-    <p-overlaybadge [value]="pendingUsers.length" [badgeDisabled]="pendingUsers.length == 0">
-        <p class="mb-0 custom-inplace-display" (click)="inplaceIndicator = true">Admin Content</p>
-    </p-overlaybadge>
+    <div class="flex gap-2">
+        <p class="mb-0 w-min custom-inplace-display" (click)="inplaceIndicator = true">Admin Content</p>
+        <p-badge [value]="pendingUsers.length" [badgeDisabled]="pendingUsers.length == 0"/>
+    </div>
 </ng-template>

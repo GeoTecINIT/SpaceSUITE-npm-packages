@@ -8,7 +8,7 @@
             [optionLabel]="'name'" placeholder="Select an Organization" [ngClass]="duplicatedOrg ? 'invalid-select' : 'custom-select'" 
             (onChange)="updateDuplicatedOrg()" class="w-full max-w-30rem" [checkmark]="true" panelStyleClass="max-w-30rem">
             <ng-template let-organization #item>
-                <div class="flex items-center gap-2">
+                <div class="flex align-items-center gap-2">
                     <div>{{ organization.name }}</div>
                     @if(!organization.isPublic) {
                         <i class="pi pi-lock ml-1"></i>

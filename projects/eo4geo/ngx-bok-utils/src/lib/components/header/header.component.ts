@@ -5,7 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { TieredMenuModule } from 'primeng/tieredmenu';
 import { AvatarModule } from 'primeng/avatar';
 import { AvatarGroupModule } from 'primeng/avatargroup';
-import { filter, forkJoin, map, Subscription, switchMap } from 'rxjs';
+import { defaultIfEmpty, filter, forkJoin, map, Subscription, switchMap } from 'rxjs';
 import { SessionModalComponent } from "../signInModal/sessionModal.component";
 import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
@@ -156,7 +156,7 @@ export class HeaderComponent {
       }),
       switchMap(adminOrgs => {
         const orgsPendingUsers$ = adminOrgs.map(org => this.orgService.getOrganizationPendingUsers(org._id));
-        return forkJoin(orgsPendingUsers$)
+        return forkJoin(orgsPendingUsers$).pipe(defaultIfEmpty([]));
       }),
     ).subscribe(orgsPendingUsers => {
         let orgsWithPendingUsers: number = 0;
