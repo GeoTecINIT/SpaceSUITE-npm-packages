@@ -94,7 +94,7 @@ export class OrganizationService {
             map(user => ({ ...user, isAdmin: false }))
           )
         );
-        return forkJoin([...pendingUsers$]).pipe(defaultIfEmpty([]));
+        return combineLatest([...pendingUsers$]).pipe(defaultIfEmpty([]));
       })
     );
   }

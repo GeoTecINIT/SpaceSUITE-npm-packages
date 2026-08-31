@@ -50,9 +50,9 @@
 
         <p-accordion-panel value="2">
             <p-accordion-header>
-                <div>
+                <div class="flex gap-2 align-items-center">
                     <span>Pending Users</span>
-                    <p-badge class="ml-2 custom-badge" [value]="pendingUsers.length" [badgeDisabled]="pendingUsers.length == 0" [badgeSize]="'small'"/>
+                    <p-badge class="custom-badge" [value]="pendingUsers.length" [badgeDisabled]="pendingUsers.length == 0" [badgeSize]="'small'"/>
                 </div>
             </p-accordion-header>
             <p-accordion-content>
@@ -70,7 +70,7 @@
                             <td>{{ user.email }}</td>
                             <td>{{ user.name }}</td>
                             <td>
-                                <p-button class="flex accept-button" variant="text" rounded="true" size="large" icon="pi pi-check" (onClick)="acceptPendingUser(user._id, user.name)"/>
+                                <p-button class="flex email-button" variant="text" rounded="true" size="large" icon="pi pi-check" (onClick)="acceptPendingUser(user._id, user.name)"/>
                             </td>
                             <td>
                                 <p-button class="flex trash-button" variant="text" rounded="true" size="large" icon="pi pi-times" (onClick)="rejectPendingUser(user._id, user.name)"/>
@@ -122,7 +122,7 @@
 </div>
 
 <ng-template #AdminContent>
-    <div class="flex gap-2 mt-1">
+    <div class="flex gap-2 mt-4 align-items-center">
         <p class="m-0 w-min custom-inplace-display" (click)="inplaceIndicator = true">Admin Content</p>
         <p-badge class="custom-badge" [value]="pendingUsers.length" [badgeDisabled]="pendingUsers.length == 0" [badgeSize]="'small'"></p-badge>
     </div>
