@@ -47,7 +47,7 @@
             </ng-template>
         </div>
         
-        <p-overlaybadge class="custom-badge " [value]="badgeNumber()" [badgeDisabled]="badgeNumber() == 0" [badgeSize]="'small'">
+        <p-overlaybadge class="custom-badge md:hidden" [value]="badgeNumber()" [badgeDisabled]="badgeNumber() == 0" [badgeSize]="'small'">
             <p-button #menuButton (click)="hideMenu = !hideMenu" class="md:hidden flex align-items-center custom-header-button ml-auto" icon="pi pi-bars" aria-label="Menu"></p-button>
         </p-overlaybadge>
     </div>
