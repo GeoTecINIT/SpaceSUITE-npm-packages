@@ -130,6 +130,10 @@ export class OrganizationService {
           observer.error(new Error('You cannot join an organization to which you already belong.'));
           return;
         }
+        if (organizationUsers.pending.includes(currentUserId)) {
+          observer.error(new Error('You already requested access to this organization.'));
+          return;
+        }
         await updateDoc(orgDocRef, {
           pending: [...organizationUsers.pending, currentUserId]
         });

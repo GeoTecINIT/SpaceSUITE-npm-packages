@@ -146,6 +146,7 @@ export class OrganizationPageComponent {
             finalize(() => {
               if (isSuccess) {
                 // TODO - Send email
+                this.selectedOrganization = undefined;
                 this.messageService.add({ 
                   severity: 'info', 
                   summary: 'Info', 
@@ -172,6 +173,7 @@ export class OrganizationPageComponent {
             }),
             finalize(() => {
               if (isSuccess) {
+                this.selectedOrganization = undefined;
                 this.messageService.add({ 
                   severity: 'info', 
                   summary: 'Info', 
