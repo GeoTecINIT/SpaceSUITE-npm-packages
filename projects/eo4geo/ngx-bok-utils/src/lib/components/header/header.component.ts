@@ -161,7 +161,7 @@ export class HeaderComponent {
     ).subscribe(orgsPendingUsers => {
       let orgsWithPendingUsers: number = 0;
       orgsPendingUsers.forEach(orgPendingUsers => {
-        if (orgPendingUsers.length > 0) orgsWithPendingUsers += orgsPendingUsers.length;
+        if (orgPendingUsers.length > 0) orgsWithPendingUsers += orgPendingUsers.length;
       })
       this.badgeNumber.set(orgsWithPendingUsers);
     });

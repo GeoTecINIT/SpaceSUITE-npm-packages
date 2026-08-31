@@ -116,7 +116,7 @@ export class OrganizationAdminComponent {
             severity: 'secondary',
         },
         acceptButtonProps: {
-            label: 'Delete',
+            label: 'Change',
             severity: 'primary',
         },
 
@@ -325,7 +325,7 @@ export class OrganizationAdminComponent {
         },
         acceptButtonProps: {
             label: 'Delete',
-            severity: 'primary',
+            severity: 'danger',
         },
 
         accept: () => {
@@ -349,7 +349,7 @@ export class OrganizationAdminComponent {
         },
         acceptButtonProps: {
             label: 'Delete',
-            severity: 'primary',
+            severity: 'danger',
         },
 
         accept: () => {
@@ -373,7 +373,7 @@ export class OrganizationAdminComponent {
         },
         acceptButtonProps: {
             label: 'Delete',
-            severity: 'primary',
+            severity: 'danger',
         },
 
         accept: () => {
