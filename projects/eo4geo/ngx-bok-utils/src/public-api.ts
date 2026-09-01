@@ -13,3 +13,4 @@ export * from './lib/guards/auth.guard';
 export * from './lib/guards/exitWithoutSaving.guard';
 export * from './lib/services/exitWithoutSaving.service';
 export * from './lib/services/auth.service';
+export * from './lib/services/permission.service'
