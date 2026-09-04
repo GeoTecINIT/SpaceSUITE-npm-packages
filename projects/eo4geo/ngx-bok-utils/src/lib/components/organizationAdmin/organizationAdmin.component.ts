@@ -8,7 +8,7 @@ import { CommonModule } from "@angular/common";
 import { OrganizationService } from "../../services/organization.service";
 import { ConfirmationService } from "primeng/api";
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { catchError, finalize, of, Subscription, concatMap } from "rxjs";
+import { catchError, finalize, of, Subscription, concatMap, switchMap, retry } from "rxjs";
 import { InputIconModule } from "primeng/inputicon";
 import { IconFieldModule } from "primeng/iconfield";
 import { InputTextModule } from "primeng/inputtext";
@@ -16,6 +16,7 @@ import { FloatLabelModule } from "primeng/floatlabel";
 import { UserService } from "../../services/user.service";
 import { OrganizationFormComponent } from "../organizationForm/organizationForm.component";
 import { BadgeModule } from 'primeng/badge';
+import { EmailService } from "../../services/email.service";
 
 @Component({
   standalone: true,
@@ -48,7 +49,7 @@ export class OrganizationAdminComponent {
 
   inplaceIndicator: boolean = false;
 
-  constructor(private orgService: OrganizationService, private userService: UserService, private confirmationService: ConfirmationService) {}
+  constructor(private orgService: OrganizationService, private userService: UserService, private confirmationService: ConfirmationService, private emailService: EmailService) {}
   
   ngOnInit() {
     this.usersSubscription = this.orgService.getOrganizationUsers(this.organization._id).subscribe(newUsers => this.users = newUsers.sort((a, b) => b.email.localeCompare(a.email)));
@@ -426,9 +427,23 @@ export class OrganizationAdminComponent {
         });
         return of(null);
       }),
+      switchMap(() => {
+        if (isSuccess) return this.emailService.sendAprovedAccessEmail(this.organization.name, userId).pipe(retry(5));
+        return of(null);
+      }),
+      catchError(() => {
+        isSuccess = false;
+        this.orgService.emitMessage({ 
+          severity: 'warn', 
+          summary: 'Warning', 
+          detail: `${userName ?? userId} is now part of ${this.organization.name}. No notification email was sent.`, 
+          life: 3000, 
+          closable: true 
+        });
+        return of(null);
+      }),
       finalize(() => {
         if (isSuccess) {
-          // TODO - notify user
           this.orgService.emitMessage({ 
             severity: 'info', 
             summary: 'Info', 
@@ -455,13 +470,27 @@ export class OrganizationAdminComponent {
         });
         return of(null);
       }),
+      switchMap(() => {
+        if (isSuccess) return this.emailService.sendRejectedAccessEmail(this.organization.name, userId).pipe(retry(5));
+        return of(null);
+      }),
+      catchError(() => {
+        isSuccess = false;
+        this.orgService.emitMessage({ 
+          severity: 'warn', 
+          summary: 'Warning', 
+          detail: `${userName ?? userId} has been rejected from ${this.organization.name}. No notification email was sent.`, 
+          life: 3000, 
+          closable: true 
+        });
+        return of(null);
+      }),
       finalize(() => {
         if (isSuccess) {
-          // TODO - notify user
           this.orgService.emitMessage({ 
             severity: 'info', 
             summary: 'Info', 
-            detail: `${userName ?? userId} is now part of ${this.organization.name}.`,
+            detail: `${userName ?? userId} has been rejected from ${this.organization.name}.`,
             life: 3000, 
             closable: true 
           });

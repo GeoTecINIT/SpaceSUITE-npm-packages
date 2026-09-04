@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Auth, authState, createUserWithEmailAndPassword, GoogleAuthProvider, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile, user } from '@angular/fire/auth';
 import { Firestore, collection, CollectionReference, doc, getDoc, setDoc, updateDoc, docData, DocumentReference, query, where, getDocs } from '@angular/fire/firestore';
-import { from, Observable, of, concatMap, take, ReplaySubject } from 'rxjs';
+import { from, Observable, of, concatMap, take, ReplaySubject, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -164,5 +164,13 @@ export class UserService {
         }
       });
     });
+  }
+
+  getEmailWithUid(userId: string): Observable<string> {
+    const userDocRef: DocumentReference = doc(this.userCollection, userId);
+    return docData(userDocRef).pipe(
+      take(1),
+      map(userData => userData ? userData['email'] : '')
+    );
   }
 }

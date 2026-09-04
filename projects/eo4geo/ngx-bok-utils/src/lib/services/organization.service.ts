@@ -50,7 +50,7 @@ export class OrganizationService {
     );
   }
 
-  private getOrganizationInfo(orgId: string): Observable<{ _id: string, name: string; description: string, email:string, isAdmin: boolean, isPublic: boolean }> {
+  getOrganizationInfo(orgId: string): Observable<{ _id: string, name: string; description: string, email:string, isAdmin: boolean, isPublic: boolean }> {
     const orgDocRef: DocumentReference = doc(this.orgCollection, orgId);
     return docData(orgDocRef).pipe(
       first(),
@@ -354,7 +354,7 @@ export class OrganizationService {
         const orgRef = doc(this.orgCollection, orgId);
         return from(deleteDoc(orgRef)).pipe(
           catchError((error) => {
-            throw new Error('Error al eliminar la organización');
+            throw new Error('Something went wrong deleting the organization. Try again later.');
           }),
           take(1)
         );

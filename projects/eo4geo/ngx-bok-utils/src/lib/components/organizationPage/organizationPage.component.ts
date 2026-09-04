@@ -6,7 +6,7 @@ import { AccordionModule } from 'primeng/accordion';
 import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from "@angular/common";
-import { catchError, filter, finalize, map, Observable, of, Subscription, switchMap, take, tap } from "rxjs";
+import { catchError, filter, finalize, map, Observable, of, retry, Subscription, switchMap, take, tap } from "rxjs";
 import { MessageService, ConfirmationService } from "primeng/api";
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { TooltipModule } from 'primeng/tooltip';
@@ -15,6 +15,7 @@ import { UserService } from "../../services/user.service";
 import { OrganizationAdminComponent } from "../organizationAdmin/organizationAdmin.component";
 import { OrganizationFormComponent } from "../organizationForm/organizationForm.component";
 import { Router } from "@angular/router";
+import { EmailService } from "../../services/email.service";
 
 @Component({
   standalone: true,
@@ -41,7 +42,7 @@ export class OrganizationPageComponent {
   userStateSubscription!: Subscription;
 
   constructor(private orgService: OrganizationService, private messageService: MessageService, private confirmationService: ConfirmationService, 
-              private userService: UserService, private router: Router) {}
+              private userService: UserService, private router: Router, private emailService: EmailService) {}
   
   ngOnInit() {
     this.userOrganizations$ = this.orgService.getUserOrganizations();
@@ -129,64 +130,87 @@ export class OrganizationPageComponent {
       switchMap(() => {
         const orgId: string = this.selectedOrganization!._id;
         const orgName: string = this.selectedOrganization!.name;
-        let isSuccess = true;
         if (!this.selectedOrganization?.isPublic) {
-          return this.orgService.requestAccessToOrganization(orgId).pipe(
-            catchError((error) => {
-              isSuccess = false;
-              this.messageService.add({ 
-                severity: 'error', 
-                summary: 'Error', 
-                detail: error.message ?? 'Something went wrong. Try again later or contact the administrator.', 
-                life: 3000, 
-                closable: true 
-              });
-              return of(null);
-            }),
-            finalize(() => {
-              if (isSuccess) {
-                // TODO - Send email
-                this.selectedOrganization = undefined;
-                this.messageService.add({ 
-                  severity: 'info', 
-                  summary: 'Info', 
-                  detail: `You requested access to ${orgName} without problems.`,
-                  life: 3000, 
-                  closable: true 
-                });
-              }
-            })
-          )
+          return this.joinPrivateOrganization(orgId, orgName);
         }
         else {
-          return this.orgService.joinOrganization(orgId).pipe(
-            catchError((error) => {
-              isSuccess = false;
-              this.messageService.add({ 
-                severity: 'error', 
-                summary: 'Error', 
-                detail: error.message ?? 'Something went wrong. Try again later or contact the administrator.', 
-                life: 3000, 
-                closable: true 
-              });
-              return of(null);
-            }),
-            finalize(() => {
-              if (isSuccess) {
-                this.selectedOrganization = undefined;
-                this.messageService.add({ 
-                  severity: 'info', 
-                  summary: 'Info', 
-                  detail: `You joined ${orgName} without problems.`,
-                  life: 3000, 
-                  closable: true 
-                });
-              }
-            })
-          )
+          return this.joinPublicOrganization(orgId, orgName);
         }
       })
     ).subscribe();
+  }
+
+  private joinPublicOrganization(orgId: string, orgName: string) {
+    let isSuccess = true;
+    return this.orgService.joinOrganization(orgId).pipe(
+      catchError((error) => {
+        isSuccess = false;
+        this.messageService.add({ 
+          severity: 'error', 
+          summary: 'Error', 
+          detail: error.message ?? 'Something went wrong. Try again later or contact the administrator.', 
+          life: 3000, 
+          closable: true 
+        });
+        return of(null);
+      }),
+      finalize(() => {
+        if (isSuccess) {
+          this.selectedOrganization = undefined;
+          this.messageService.add({ 
+            severity: 'info', 
+            summary: 'Info', 
+            detail: `You joined ${orgName} without problems.`,
+            life: 3000, 
+            closable: true 
+          });
+        }
+      })
+    );
+  }
+
+  private joinPrivateOrganization(orgId: string, orgName: string) {
+    let isSuccess = true;
+    return this.orgService.requestAccessToOrganization(orgId).pipe(
+      catchError((error) => {
+        isSuccess = false;
+        this.messageService.add({ 
+          severity: 'error', 
+          summary: 'Error', 
+          detail: error.message ?? 'Something went wrong. Try again later or contact the administrator.', 
+          life: 3000, 
+          closable: true 
+        });
+        return of(null);
+      }),
+      switchMap(() => {
+        if (isSuccess) return this.emailService.sendRequestedAccessEmail(orgId).pipe(retry(5));
+        return of(null);
+      }),
+      catchError(() => {
+        isSuccess = false;
+        this.messageService.add({ 
+          severity: 'warn', 
+          summary: 'Warning', 
+          detail: `You requested access to ${orgName}. No notification email was sent, but your request remains available in the app.`, 
+          life: 3000, 
+          closable: true 
+        });
+        return of(null);
+      }),
+      finalize(() => {
+        if (isSuccess) {
+          this.selectedOrganization = undefined;
+          this.messageService.add({ 
+            severity: 'info', 
+            summary: 'Info', 
+            detail: `You requested access to ${orgName} without problems.`,
+            life: 3000, 
+            closable: true 
+          });
+        }
+      })
+    );
   }
 
   updateDuplicatedOrg() {
