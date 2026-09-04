@@ -428,21 +428,6 @@ export class OrganizationAdminComponent {
         return of(null);
       }),
       switchMap(() => {
-        if (isSuccess) return this.emailService.sendAprovedAccessEmail(this.organization.name, userId).pipe(retry(5));
-        return of(null);
-      }),
-      catchError(() => {
-        isSuccess = false;
-        this.orgService.emitMessage({ 
-          severity: 'warn', 
-          summary: 'Warning', 
-          detail: `${userName ?? userId} is now part of ${this.organization.name}. No notification email was sent.`, 
-          life: 3000, 
-          closable: true 
-        });
-        return of(null);
-      }),
-      finalize(() => {
         if (isSuccess) {
           this.orgService.emitMessage({ 
             severity: 'info', 
@@ -451,7 +436,20 @@ export class OrganizationAdminComponent {
             life: 3000, 
             closable: true 
           });
+          return this.emailService.sendAprovedAccessEmail(this.organization.name, userId).pipe(retry(5));
         }
+        return of(null);
+      }),
+      catchError(() => {
+        isSuccess = false;
+        this.orgService.emitMessage({ 
+          severity: 'warn', 
+          summary: 'Warning', 
+          detail: `Something went wrong notifying the user.`, 
+          life: 3000, 
+          closable: true 
+        });
+        return of(null);
       })
     ).subscribe();
   }
@@ -471,30 +469,27 @@ export class OrganizationAdminComponent {
         return of(null);
       }),
       switchMap(() => {
-        if (isSuccess) return this.emailService.sendRejectedAccessEmail(this.organization.name, userId).pipe(retry(5));
-        return of(null);
-      }),
-      catchError(() => {
-        isSuccess = false;
-        this.orgService.emitMessage({ 
-          severity: 'warn', 
-          summary: 'Warning', 
-          detail: `${userName ?? userId} has been rejected from ${this.organization.name}. No notification email was sent.`, 
-          life: 3000, 
-          closable: true 
-        });
-        return of(null);
-      }),
-      finalize(() => {
         if (isSuccess) {
-          this.orgService.emitMessage({ 
+           this.orgService.emitMessage({ 
             severity: 'info', 
             summary: 'Info', 
             detail: `${userName ?? userId} has been rejected from ${this.organization.name}.`,
             life: 3000, 
             closable: true 
           });
+          return this.emailService.sendRejectedAccessEmail(this.organization.name, userId).pipe(retry(5));
         }
+        return of(null);
+      }),
+      catchError(() => {
+        this.orgService.emitMessage({ 
+          severity: 'warn', 
+          summary: 'Warning', 
+          detail: `Something went wrong notifying the user.`, 
+          life: 3000, 
+          closable: true 
+        });
+        return of(null);
       })
     ).subscribe();
   }

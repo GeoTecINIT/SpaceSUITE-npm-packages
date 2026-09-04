@@ -184,23 +184,8 @@ export class OrganizationPageComponent {
         return of(null);
       }),
       switchMap(() => {
-        if (isSuccess) return this.emailService.sendRequestedAccessEmail(orgId).pipe(retry(5));
-        return of(null);
-      }),
-      catchError(() => {
-        isSuccess = false;
-        this.messageService.add({ 
-          severity: 'warn', 
-          summary: 'Warning', 
-          detail: `You requested access to ${orgName}. No notification email was sent, but your request remains available in the app.`, 
-          life: 3000, 
-          closable: true 
-        });
-        return of(null);
-      }),
-      finalize(() => {
+        this.selectedOrganization = undefined;
         if (isSuccess) {
-          this.selectedOrganization = undefined;
           this.messageService.add({ 
             severity: 'info', 
             summary: 'Info', 
@@ -208,7 +193,19 @@ export class OrganizationPageComponent {
             life: 3000, 
             closable: true 
           });
+          return this.emailService.sendRequestedAccessEmail(orgId).pipe(retry(5));
         }
+        return of(null);
+      }),
+      catchError(() => {
+        this.messageService.add({ 
+          severity: 'warn', 
+          summary: 'Warning', 
+          detail: `Something went wrong notifying your request to the organization, but your request remains available in the app.`, 
+          life: 3000, 
+          closable: true 
+        });
+        return of(null);
       })
     );
   }
