@@ -88,6 +88,7 @@ export class EmailService {
   }
 
   private sendEmail(body: any): Observable<HttpResponse<string>> {
+    return throwError(() => new Error('Email server is not available!'))
     return this.getToken().pipe(
       switchMap(idToken => {
         if (idToken == null) throwError(() => new Error('The user is not authenticated!'));
