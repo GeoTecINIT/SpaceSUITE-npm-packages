@@ -3,7 +3,7 @@
 <div class="flex flex-column align-items-stretch p-4">
     <h2 class="mx-auto">Your Organization(s) Details</h2>
     <p class="mx-auto">You are part of {{(userOrganizations$ | async)?.length || 0}} organization(s). You can also create your own organization.</p>
-    <div class="flex flex-wrap mb-2 align-items-center gap-4 justify-content-center w-full">
+    <div class="flex flex-wrap mb-3 align-items-center gap-4 justify-content-center w-full">
         <p-select [options]="(organizations$ | async) || []" [showClear]="true" [(ngModel)]="selectedOrganization" 
             [optionLabel]="'name'" placeholder="Select an Organization" [ngClass]="duplicatedOrg ? 'invalid-select' : 'custom-select'" 
             (onChange)="updateDuplicatedOrg()" class="w-full max-w-30rem" [checkmark]="true" panelStyleClass="max-w-30rem">
@@ -16,7 +16,7 @@
                 </div>
             </ng-template>
         </p-select>
-        <p-button class="custom-button" [label]="selectedOrganization?.isPublic ? 'Join Organization' : 'Request Access'" size="small" (click)="joinOrganization()" [disabled]="!selectedOrganization"/>
+        <p-button class="custom-button" [label]="(!selectedOrganization || selectedOrganization.isPublic) ? 'Join Organization' : 'Request Access'" size="small" (click)="joinOrganization()" [disabled]="!selectedOrganization"/>
     </div>
     @if (selectedOrganization && !selectedOrganization.isPublic) {
         <p class="mx-auto my-0 font-italic text-xs" [style.color]="'var(--danger-color)'">If you want to access a private organization, you must wait for your request acceptance!</p>
