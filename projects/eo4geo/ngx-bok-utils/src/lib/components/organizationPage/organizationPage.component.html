@@ -3,7 +3,7 @@
 <div class="flex flex-column align-items-stretch p-4">
     <h2 class="mx-auto">Your Organization(s) Details</h2>
     <p class="mx-auto">You are part of {{(userOrganizations$ | async)?.length || 0}} organization(s). You can also create your own organization.</p>
-    <div class="flex flex-wrap mb-4 align-items-center gap-4 justify-content-center w-full">
+    <div class="flex flex-wrap mb-2 align-items-center gap-4 justify-content-center w-full">
         <p-select [options]="(organizations$ | async) || []" [showClear]="true" [(ngModel)]="selectedOrganization" 
             [optionLabel]="'name'" placeholder="Select an Organization" [ngClass]="duplicatedOrg ? 'invalid-select' : 'custom-select'" 
             (onChange)="updateDuplicatedOrg()" class="w-full max-w-30rem" [checkmark]="true" panelStyleClass="max-w-30rem">
@@ -16,9 +16,12 @@
                 </div>
             </ng-template>
         </p-select>
-        <p-button class="custom-button" label="Join Organization" size="small" (click)="joinOrganization()" [disabled]="!selectedOrganization"/>
+        <p-button class="custom-button" [label]="selectedOrganization?.isPublic ? 'Join Organization' : 'Request Access'" size="small" (click)="joinOrganization()" [disabled]="!selectedOrganization"/>
     </div>
-    <div class="flex flex-column gap-4">
+    @if (selectedOrganization && !selectedOrganization.isPublic) {
+        <p class="mx-auto my-0 font-italic text-xs" [style.color]="'var(--danger-color)'">If you want to access a private organization, you must wait for your request acceptance!</p>
+    }
+    <div class="flex flex-column gap-4 mt-4">
         <p-card class="custom-color-card flex justify-content-center" styleClass="flex-auto" [style]="{ 'max-width': '50rem', 'min-width': '20rem', height: 'auto'}" *ngFor="let organization of userOrganizations$ | async; let i = index">
             <ng-template #header>
                 <div class="flex justify-content-between" style="padding-left: 1.25rem; padding-right: 1.25rem; padding-top: 1.25rem;">

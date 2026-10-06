@@ -48,7 +48,6 @@ export class OrganizationPageComponent {
     this.userOrganizations$ = this.orgService.getUserOrganizations();
 
     this.organizations$ = this.orgService.getOrganizations().pipe(
-      take(1), 
       map(orgs => {
         const organizations = orgs.map(org => ({
           _id: org._id,
@@ -160,7 +159,7 @@ export class OrganizationPageComponent {
           this.messageService.add({ 
             severity: 'info', 
             summary: 'Info', 
-            detail: `You joined ${orgName} without problems.`,
+            detail: `You joined ${orgName}.`,
             life: 3000, 
             closable: true 
           });
@@ -189,8 +188,7 @@ export class OrganizationPageComponent {
           this.messageService.add({ 
             severity: 'info', 
             summary: 'Info', 
-            detail: `You requested access to ${orgName} without problems.`,
-            life: 3000, 
+            detail: `You requested access to ${orgName}.`,
             closable: true 
           });
           return this.emailService.sendRequestedAccessEmail(orgId).pipe(retry(5));
