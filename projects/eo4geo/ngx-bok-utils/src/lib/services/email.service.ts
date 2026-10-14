@@ -1,21 +1,26 @@
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
-import { Auth } from '@angular/fire/auth';
-import { from, map, Observable, of, switchMap, take, throwError } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { Injectable } from '@angular/core';
+import { Observable, switchMap, take } from 'rxjs';
 import { OrganizationService } from './organization.service';
 import { UserService } from './user.service';
+import * as gapis from 'googleapis'
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EmailService {
 
-  private URL_UPDATE_SERVICE = environment.URL_UPDATE_SERVICE;
-  private auth: Auth;
+  private gmail: gapis.gmail_v1.Gmail;
 
-  constructor(private readonly http: HttpClient, private readonly organizationService: OrganizationService, private readonly userService:UserService) {
-    this.auth = inject(Auth);
+  constructor(private readonly organizationService: OrganizationService, private readonly userService:UserService) {
+    const auth = new gapis.google.auth.JWT({
+      email: environment.SERVICE_ACCOUNT.client_email,
+      key: environment.SERVICE_ACCOUNT.private_key,
+      scopes: ["https://www.googleapis.com/auth/gmail.send"],
+      subject: environment.SPACESUITE_EMAIL,
+    });
+
+    this.gmail = gapis.google.gmail({ version: "v1", auth });
   }
 
   public sendRequestedAccessEmail(orgId: string) {
@@ -87,35 +92,32 @@ export class EmailService {
     );
   }
 
-  private sendEmail(body: any): Observable<HttpResponse<string>> {
-    return throwError(() => new Error('Email server is not available!'))
-    return this.getToken().pipe(
-      switchMap(idToken => {
-        if (idToken == null) throwError(() => new Error('The user is not authenticated!'));
-        const headers = {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-          'Authorization': `Bearer ${idToken}`,
-        };
-        
+  private sendEmail(body: any): Observable<string> {
+    const mime = [
+      `To: ${body.emailReceivers}`,
+      `From: ${environment.SPACESUITE_EMAIL}`,
+      `Subject: ${body.subject}`,
+      "MIME-Version: 1.0",
+      "Content-Type: text/plain; charset=UTF-8",
+      "",
+      body.html,
+    ].join("\r\n");
 
-        return this.http.post(
-          this.URL_UPDATE_SERVICE + 'send-email',
-          body,
-          {
-            headers,
-            observe: 'response',
-            responseType: 'text'
-          }
-        );
+    const raw = Buffer.from(mime).toString("base64url");
+
+    return new Observable<string>(subscriber => {
+      this.gmail.users.messages.send({
+        userId: "me",
+        requestBody: { raw },
+      }).then(response => {
+        if (subscriber.closed) return;
+        subscriber.next(response.data.id ?? '');
+        subscriber.complete();
+      }).catch((err: any) => {
+        if (subscriber.closed) return;
+        subscriber.error(err.response?.data?.error?.message ?? err.message ?? 'Gmail request failed',);
       })
-    )
-  }
-
-  private getToken(): Observable<string | null> {
-    if (this.auth.currentUser)
-      return from(this.auth.currentUser.getIdToken());
-    else return of(null);
+    });
   }
 
 }
