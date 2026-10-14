@@ -1,7 +1,7 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
-import { from, map, Observable, of, switchMap, take, throwError } from 'rxjs';
+import { from, Observable, of, switchMap, take, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { OrganizationService } from './organization.service';
 import { UserService } from './user.service';
@@ -88,7 +88,6 @@ export class EmailService {
   }
 
   private sendEmail(body: any): Observable<HttpResponse<string>> {
-    return throwError(() => new Error('Email server is not available!'))
     return this.getToken().pipe(
       switchMap(idToken => {
         if (idToken == null) throwError(() => new Error('The user is not authenticated!'));
