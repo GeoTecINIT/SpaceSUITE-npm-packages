@@ -6,13 +6,8 @@
 /out-tsc
 /bazel-out
 
-# Environments
-/src/environments
-/projects/eo4geo/*/src/environments
-
 # Node
 /node_modules
-/projects/eo4geo/*/node_modules
 npm-debug.log
 yarn-error.log
 

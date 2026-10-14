@@ -1,19 +1,18 @@
 {
   "name": "@eo4geo/ngx-bok-utils",
-  "version": "1.11.0",
+  "version": "1.10.5",
   "author": "Marc Pardo Fernández",
   "license": "MIT",
   "peerDependencies": {
-    "@angular/animations": "^19.1.0",
     "@angular/common": "^19.1.0",
     "@angular/core": "^19.1.0",
     "@angular/fire": "^19.0.0",
+    "@angular/animations": "^19.1.0",
     "primeflex": "^3.3.1",
     "primeicons": "^7.0.0",
     "primeng": "^19.0.3"
   },
   "dependencies": {
-    "googleapis": "^178.0.0",
     "tslib": "^2.3.0"
   },
   "sideEffects": false
