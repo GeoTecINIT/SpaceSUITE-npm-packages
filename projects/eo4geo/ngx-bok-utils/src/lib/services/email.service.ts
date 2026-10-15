@@ -24,13 +24,13 @@ export class EmailService {
       switchMap((organization: {_id: string, name: string, description: string, email: string, isAdmin: boolean, isPublic: boolean}) => {
         const html = `<p>Dear ${organization.name} Administrators,<br><br>
         A new user has requested to join the ${organization.name} organization.<br> 
-        You can approve or reject the request from the organization's administrator dashboard, which is accessible from the SpaceSUITE applications.<br>
+        You can approve or reject the request from the organization's administrator dashboard, which is accessible from the SpaceSUITE applications.<br><br>
         Best regards,<br>
         SpaceSuite Team.</p>`
 
         const body = 
         { 
-          'subject': `SpaceSUITE - New request to join ${organization}`,
+          'subject': `SpaceSUITE - New request to join ${organization.name}`,
           'emailReceivers': [organization.email],
           'html': html
         };
@@ -46,7 +46,7 @@ export class EmailService {
         if (email != '') {
           const html = `<p>Dear ${email},<br><br>
           You've been accepted into the ${organization} organization.<br> 
-          You can create new resources under this organization using the different SpaceSUITE applications.<br>
+          You can create new resources under this organization using the different SpaceSUITE applications.<br><br>
           Best regards,<br>
           SpaceSuite Team.</p>`
 
@@ -69,7 +69,7 @@ export class EmailService {
       switchMap(email => {
         if (email != '') {
           const html = `<p>Dear ${email},<br><br>
-          Your request to join ${organization} have been rejected.<br>
+          Your request to join ${organization} have been rejected.<br><br>
           Best regards,<br>
           SpaceSuite Team.</p>`
 
