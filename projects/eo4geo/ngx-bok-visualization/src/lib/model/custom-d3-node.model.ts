@@ -12,7 +12,7 @@ export class CustomD3Node {
     prerequisites: CustomD3Node[] = [];
     postrequisites: CustomD3Node[] = [];
     similarConcepts: CustomD3Node[] = [];
-    demonstrableSkills: { description: string; nameShort: string; uri: string }[] = [];
+    demonstrableSkills: { name: string; bloomLevel: number; bloomVerb: string }[] = [];
     sourceDocuments: { description: string; nameShort: string; url: string }[] = [];
     contributors: { description: string; nameShort: string; url: string }[] = [];
     uri: string = "";

@@ -108,9 +108,9 @@ export class BokDataService {
       for (const conceptIndex of skill.concepts) {
         const node = allNodes[conceptIndex];
         node.demonstrableSkills.push({
-          description: skill.name,
-          nameShort: skill.name,
-          uri: skill.name,
+          name: skill.name,
+          bloomLevel: skill.bloomLevel,
+          bloomVerb: skill.bloomVerb,
         });
       }
     }

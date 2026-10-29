@@ -49,7 +49,7 @@ export class CustomD3NodeCollection {
         this.nodes.forEach(node => {
           if (Array.isArray(node.demonstrableSkills)) {
             node.demonstrableSkills.forEach(skill => {
-              if (skill.description.toUpperCase().includes(upperKeyword) && !result.includes(node)) {
+              if (skill.name.toUpperCase().includes(upperKeyword) && !result.includes(node)) {
                 result.push(node);
               }
             });
@@ -98,7 +98,7 @@ export class CustomD3NodeCollection {
         this.nodes.forEach(node => {
           if (Array.isArray(node.demonstrableSkills)) {
             node.demonstrableSkills.forEach(skill => {
-              if (skill.description.toUpperCase().includes(upperKeyword) && node.id && !result.includes(node.id)) {
+              if (skill.name.toUpperCase().includes(upperKeyword) && node.id && !result.includes(node.id)) {
                 result.push(node.id);
               }
             });

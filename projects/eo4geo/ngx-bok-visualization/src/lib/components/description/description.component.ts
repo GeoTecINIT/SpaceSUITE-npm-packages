@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { CustomD3Node } from '../../model/custom-d3-node.model';
 import { ListComponent } from '../list/list.component';
 import { VersionsComponent } from '../versions/versions.component';
+import { SkillsTreeComponent } from '../skillsTree/skillsTree.component';
 
 @Component({
   standalone: true,
   selector: 'description',
   templateUrl: './description.component.html',
   styleUrls: ['./description.component.css'],
-  imports: [CommonModule, ListComponent, VersionsComponent],
+  imports: [CommonModule, ListComponent, VersionsComponent, SkillsTreeComponent],
 })
 export class DescriptionComponent {
 

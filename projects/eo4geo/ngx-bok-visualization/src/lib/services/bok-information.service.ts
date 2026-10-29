@@ -79,7 +79,7 @@ export class BokInformationService {
       filter((parsedData): parsedData is ParsedBokData => parsedData !== undefined),
       map((parsedData: ParsedBokData) => {
         const skills = parsedData.conceptNodeCollection.getNodeByNameShort(code)?.demonstrableSkills || [];
-        return skills.map(value => value.description);
+        return skills.map(value => value.name);
       })
     );
   }

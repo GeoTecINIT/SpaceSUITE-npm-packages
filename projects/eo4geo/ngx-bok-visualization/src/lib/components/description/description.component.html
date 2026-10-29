@@ -113,7 +113,7 @@
         [headline]="'Similar concepts'" [isConcept]="true" (codSelectedChange)="browseToConcept($event)"></list>
 
     <!-- Skills -->
-    <list [array]="bokNode.demonstrableSkills" [propertyname]="'description'" [headline]="'Skills'" [isConcept]="false"></list>
+    <skillsTree [array]="bokNode.demonstrableSkills" [headline]="'Skills'"></skillsTree>
 
     <!-- Contributors -->
     <list [array]="bokNode.contributors" [propertyname]="'nameShort'" [propertyname2]="'url'" 
