@@ -27,4 +27,4 @@
     <p-divider />
     <searchResults [suggestions]="nodeSuggestions" [searchValue]="inputValue" [highlightDescription]="searchBooleans.searchDescription" (codSelectedChange)="onCodSelectedChange($event)"/>
 </p-drawer>
-<p-button variant="text" (click)="visible = true" icon="pi pi-search" [label]="isMobile ? '' : 'Search'" class="absolute top-70px right-0 m-4 custom-button"/>
+<p-button variant="text" (click)="visible = true" icon="pi pi-search" [label]="isMobile ? '' : 'Search'" class="absolute m-4 custom-button" [style.right]="'1%'"/>
