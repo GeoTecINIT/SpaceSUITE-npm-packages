@@ -75,4 +75,8 @@ export class DescriptionComponent {
   private removeHtmlTags(text: string): string {
     return text.replace(/<\/?[^>]+(>|$)/g, "");
   }
+
+  get useBloomSkills() {
+    return parseInt(this.bokVersion?.slice(1) ?? '') < 11
+  }
 }
