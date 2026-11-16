@@ -1,4 +1,4 @@
-import {Component, Input, WritableSignal, signal} from '@angular/core';
+import {Component, Input, SimpleChanges, WritableSignal, signal} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TreeModule } from 'primeng/tree';
 import { TreeNode } from "primeng/api";
@@ -16,78 +16,81 @@ export class SkillsTreeComponent {
 
   public formattedTree: WritableSignal<TreeNode[]> = signal([])
 
-  ngOnInit() {
-    const tempTree: TreeNode[] = [
-      {
-        key: '1',
-        label: 'Level 1: Remember',
-        children: [],
-        leaf: false,
-        expanded: false,
-      },
-      {
-        key: '2',
-        label: 'Level 2: Understand',
-        children: [],
-        leaf: false,
-        expanded: false,
-      },
-      {
-        key: '3',
-        label: 'Level 3: Apply',
-        children: [],
-        leaf: false,
-        expanded: false,
-      },
-      {
-        key: '4',
-        label: 'Level 4: Analyze',
-        children: [],
-        leaf: false,
-        expanded: false,
-      },
-      {
-        key: '5',
-        label: 'Level 5: Evaluate',
-        children: [],
-        leaf: false,
-        expanded: false,
-      },
-      {
-        key: '6',
-        label: 'Level 6: Create',
-        children: [],
-        leaf: false,
-        expanded: false,
-      },
-      {
-        key: '0',
-        label: 'Unclassified Skills',
-        children: [],
-        leaf: false,
-        expanded: false,
-      },
-    ];
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['array']) {
+      const tempTree: TreeNode[] = [
+        {
+          key: '1',
+          label: 'Level 1: Remember',
+          children: [],
+          leaf: false,
+          expanded: false,
+        },
+        {
+          key: '2',
+          label: 'Level 2: Understand',
+          children: [],
+          leaf: false,
+          expanded: false,
+        },
+        {
+          key: '3',
+          label: 'Level 3: Apply',
+          children: [],
+          leaf: false,
+          expanded: false,
+        },
+        {
+          key: '4',
+          label: 'Level 4: Analyze',
+          children: [],
+          leaf: false,
+          expanded: false,
+        },
+        {
+          key: '5',
+          label: 'Level 5: Evaluate',
+          children: [],
+          leaf: false,
+          expanded: false,
+        },
+        {
+          key: '6',
+          label: 'Level 6: Create',
+          children: [],
+          leaf: false,
+          expanded: false,
+        },
+        {
+          key: '0',
+          label: 'Unclassified Skills',
+          children: [],
+          leaf: false,
+          expanded: false,
+        }
+      ];
 
-    this.array.forEach(element => {
-      const levelNode: TreeNode = tempTree[element.bloomLevel - 1];
-      if (!levelNode) return
-      levelNode.children ??= [];
-      levelNode.children.push({
-        key: `${element.bloomLevel}-${element.bloomVerb}-${levelNode.children.length}`,
-        label: element.name,
-        children: [],
-        leaf: true,
-        expanded: false,
-        type: 'leaf',
-        data: element.bloomVerb 
+      const newArray = changes['array'].currentValue as { name: string; bloomLevel: number; bloomVerb: string }[];
+      newArray.forEach(element => {
+        const levelNode = tempTree.at(element.bloomLevel - 1);
+        if (!levelNode) return
+        levelNode.children ??= [];
+        levelNode.children.push({
+          key: `${element.bloomLevel}-${element.bloomVerb}-${levelNode.children.length}`,
+          label: element.name,
+          children: [],
+          leaf: true,
+          expanded: false,
+          type: 'leaf',
+          data: element.bloomVerb 
+        });
       });
-    });
 
-    tempTree.forEach(levelNode => {
-      levelNode.children = this.getSortedArray(levelNode.children ?? []);
-    })
-    this.formattedTree.set(tempTree);
+      tempTree.forEach(levelNode => {
+        levelNode.children = this.getSortedArray(levelNode.children ?? []);
+      })
+      this.formattedTree.set(tempTree);
+    }
   }
 
   private getSortedArray(values: TreeNode[]) {

@@ -105,7 +105,7 @@ export class BokDataService {
     }
 
     // Handle skills
-    for (const skill of bokJSON.classifiedSkills) {
+    for (const skill of (bokJSON.classifiedSkills || [])) {
       for (const conceptIndex of skill.concepts) {
         const node = allNodes[conceptIndex];
         node.classifiedSkills.push({

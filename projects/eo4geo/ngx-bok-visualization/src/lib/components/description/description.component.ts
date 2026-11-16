@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output, signal, SimpleChanges, WritableSignal} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CustomD3Node } from '../../model/custom-d3-node.model';
 import { ListComponent } from '../list/list.component';
@@ -23,6 +23,24 @@ export class DescriptionComponent {
   @Input() bokVersion?: string;
   @Output() codSelectedChange = new EventEmitter<string>();
   @Output() bokVersionChange = new EventEmitter<string>();
+
+  unifiedSkills: WritableSignal<{ name: string; bloomLevel: number; bloomVerb: string }[]> = signal([]);
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['bokNode']) {
+      const newValue = changes['bokNode'].currentValue as CustomD3Node;
+      this.unifiedSkills.set(
+        [
+          ...(newValue.classifiedSkills || []),
+          ...newValue.skills.map(skill => ({
+            name: skill.description,
+            bloomLevel: 0,
+            bloomVerb: ''
+          }))
+        ]
+      );
+    }
+  }
 
   get permalink(): string {
     return `https://geospacebok.eu/${this.bokNode.nameShort}`;
@@ -77,6 +95,6 @@ export class DescriptionComponent {
   }
 
   get useBloomSkills() {
-    return parseInt(this.bokVersion?.slice(1) ?? '') < 11
+    return parseInt(this.bokVersion?.slice(1) ?? '') >= 11
   }
 }

@@ -114,7 +114,7 @@
 
     <!-- Skills -->
     @if (useBloomSkills) {
-        <skillsTree [array]="bokNode.classifiedSkills" [headline]="'Skills'"></skillsTree>
+        <skillsTree [array]="unifiedSkills()" [headline]="'Skills'"></skillsTree>
     }
     @else {
         <list [array]="bokNode.skills" [propertyname]="'description'" [headline]="'Skills'" [isConcept]="false"></list>
