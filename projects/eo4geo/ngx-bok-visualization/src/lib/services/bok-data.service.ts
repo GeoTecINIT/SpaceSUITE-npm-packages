@@ -67,7 +67,8 @@ export class BokDataService {
         uri: n.toString(),
         id: n.toString(),
         children: [],
-        demonstrableSkills: [],
+        classifiedSkills: [],
+        skills: [],
         sourceDocuments: [],
         contributors: [],
         parent: null,
@@ -104,13 +105,24 @@ export class BokDataService {
     }
 
     // Handle skills
-    for (const skill of bokJSON.skills) {
+    for (const skill of bokJSON.classifiedSkills) {
       for (const conceptIndex of skill.concepts) {
         const node = allNodes[conceptIndex];
-        node.demonstrableSkills.push({
+        node.classifiedSkills.push({
           name: skill.name,
           bloomLevel: skill.bloomLevel,
           bloomVerb: skill.bloomVerb,
+        });
+      }
+    }
+
+    for (const skill of bokJSON.skills) {
+      for (const conceptIndex of skill.concepts) {
+        const node = allNodes[conceptIndex];
+        node.skills.push({
+          description: skill.name,
+          nameShort: skill.name,
+          url: skill.name,
         });
       }
     }

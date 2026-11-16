@@ -12,7 +12,8 @@ export class CustomD3Node {
     prerequisites: CustomD3Node[] = [];
     postrequisites: CustomD3Node[] = [];
     similarConcepts: CustomD3Node[] = [];
-    demonstrableSkills: { name: string; bloomLevel: number; bloomVerb: string }[] = [];
+    classifiedSkills: { name: string; bloomLevel: number; bloomVerb: string }[] = [];
+    skills: { description: string; nameShort: string; url: string }[] = [];
     sourceDocuments: { description: string; nameShort: string; url: string }[] = [];
     contributors: { description: string; nameShort: string; url: string }[] = [];
     uri: string = "";

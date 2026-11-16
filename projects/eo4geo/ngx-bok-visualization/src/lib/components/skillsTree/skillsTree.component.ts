@@ -16,103 +16,6 @@ export class SkillsTreeComponent {
 
   public formattedTree: WritableSignal<TreeNode[]> = signal([])
 
-  private placeholderData = [
-  {
-    "name": "Recognize Geospatial Data types, including primary sources like remote sensing imagery and secondary sources like scanned analog maps.",
-    "bloomLevel": 1,
-    "bloomVerb": "Recognizing"
-  },
-  {
-    "name": "Recall Geospatial Data core properties, including spatial autocorrelation and the inherent geometric complexity of the Earth's surface.",
-    "bloomLevel": 1,
-    "bloomVerb": "Recalling"
-  },
-  {
-    "name": "Interpret Geospatial Data by translating raw measurements of locations and attributes into meaningful spatial information for environmental questions.",
-    "bloomLevel": 2,
-    "bloomVerb": "Interpreting"
-  },
-  {
-    "name": "Exemplify Geospatial Data sources using police traffic crash reports, environmental monitoring station logs, and satellite imagery datasets.",
-    "bloomLevel": 2,
-    "bloomVerb": "Exemplifying"
-  },
-  {
-    "name": "Classify Geospatial Data into primary field surveys and secondary digitized datasets containing spatial, temporal, and attribute components.",
-    "bloomLevel": 2,
-    "bloomVerb": "Classifying"
-  },
-  {
-    "name": "Summarize Geospatial Data characteristics, including data currency, information value, metadata presence, and collection costs.",
-    "bloomLevel": 2,
-    "bloomVerb": "Summarizing"
-  },
-  {
-    "name": "Infer Geospatial Data quality from metadata, including potential tracking errors and positional uncertainty in historical datasets.",
-    "bloomLevel": 2,
-    "bloomVerb": "Inferring"
-  },
-  {
-    "name": "Compare Geospatial Data properties across different eras, contrasting legacy expert-produced data with modern web-based geographic information clearinghouses.",
-    "bloomLevel": 2,
-    "bloomVerb": "Comparing"
-  },
-  {
-    "name": "Explain Geospatial Data workflows and how analytical methods transform raw measurements into information for government planning agencies.",
-    "bloomLevel": 2,
-    "bloomVerb": "Explaining"
-  },
-  {
-    "name": "Execute Geospatial Data processing tasks by cleaning raw surveying measurements and appending descriptive attributes to localized spatial points.",
-    "bloomLevel": 3,
-    "bloomVerb": "Executing"
-  },
-  {
-    "name": "Implement Geospatial Data collection procedures using GPS tracking and field surveys to systematically gather localized attribute and temporal data.",
-    "bloomLevel": 3,
-    "bloomVerb": "Implementing"
-  },
-  {
-    "name": "Differentiate Geospatial Data elements by distinguishing spatial coordinates, temporal markers, and descriptive attributes in geographic data models.",
-    "bloomLevel": 4,
-    "bloomVerb": "Differentiating"
-  },
-  {
-    "name": "Organize Geospatial Data sets by arranging primary surveying points and secondary scanned maps within an established spatial data infrastructure framework.",
-    "bloomLevel": 4,
-    "bloomVerb": "Organizing"
-  },
-  {
-    "name": "Attribute Geospatial Data point biases to commercial or proprietary interests influencing primary data acquisition methods.",
-    "bloomLevel": 4,
-    "bloomVerb": "Attributing"
-  },
-  {
-    "name": "Check Geospatial Data integrity by testing file structures against data quality standards and identifying inconsistencies in scale, attributes, or temporal components.",
-    "bloomLevel": 5,
-    "bloomVerb": "Checking"
-  },
-  {
-    "name": "Critique Geospatial Data quality by evaluating fitness for process modeling based on currency, resolution errors, and gaps in historical data.",
-    "bloomLevel": 5,
-    "bloomVerb": "Critiquing"
-  },
-  {
-    "name": "Generate Geospatial Data hypotheses by exploring spatial autocorrelation and predicting interactions among location-based phenomena across geographical extents.",
-    "bloomLevel": 6,
-    "bloomVerb": "Generating"
-  },
-  {
-    "name": "Plan Geospatial Data acquisition frameworks by designing collection strategies that balance surveying costs with web-based data clearinghouse options.",
-    "bloomLevel": 6,
-    "bloomVerb": "Planning"
-  },
-  {
-    "name": "Produce Geospatial Data schemas by combining spatial, temporal, and descriptive attributes with comprehensive metadata in a coherent database.",
-    "bloomLevel": 6,
-    "bloomVerb": "Producing"
-  }];
-
   ngOnInit() {
     const tempTree: TreeNode[] = [
       {
@@ -157,9 +60,16 @@ export class SkillsTreeComponent {
         leaf: false,
         expanded: false,
       },
+      {
+        key: '0',
+        label: 'Unclassified Skills',
+        children: [],
+        leaf: false,
+        expanded: false,
+      },
     ];
 
-    this.placeholderData.forEach(element => {
+    this.array.forEach(element => {
       const levelNode: TreeNode = tempTree[element.bloomLevel - 1];
       if (!levelNode) return
       levelNode.children ??= [];

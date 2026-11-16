@@ -74,12 +74,22 @@ export class BokInformationService {
     );
   }
 
-  getConceptSkills(code: string): Observable<string[]> {
+  getConceptSkills(code: string): Observable<{
+    name: string;
+    bloomLevel: number;
+    bloomVerb: string;
+  }[]> {
     return this.bokDataService.getParsedBokData().pipe(
       filter((parsedData): parsedData is ParsedBokData => parsedData !== undefined),
       map((parsedData: ParsedBokData) => {
-        const skills = parsedData.conceptNodeCollection.getNodeByNameShort(code)?.demonstrableSkills || [];
-        return skills.map(value => value.name);
+        const node = parsedData.conceptNodeCollection.getNodeByNameShort(code);
+        const skills = node?.classifiedSkills || [];
+        const unclassifiedSkills = node?.skills || []
+        return [...skills, ...unclassifiedSkills.map(value => ({
+          name: value.description,
+          bloomLevel: 0,
+          bloomVerb: ''
+        }))];
       })
     );
   }

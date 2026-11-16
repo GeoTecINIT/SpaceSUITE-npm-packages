@@ -47,9 +47,16 @@ export class CustomD3NodeCollection {
   
       if (searchSkills) {
         this.nodes.forEach(node => {
-          if (Array.isArray(node.demonstrableSkills)) {
-            node.demonstrableSkills.forEach(skill => {
+          if (Array.isArray(node.classifiedSkills)) {
+            node.classifiedSkills.forEach(skill => {
               if (skill.name.toUpperCase().includes(upperKeyword) && !result.includes(node)) {
+                result.push(node);
+              }
+            });
+          }
+          if (Array.isArray(node.skills)) {
+            node.skills.forEach(skill => {
+              if (skill.description.toUpperCase().includes(upperKeyword) && !result.includes(node)) {
                 result.push(node);
               }
             });
@@ -96,9 +103,16 @@ export class CustomD3NodeCollection {
   
       if (searchSkills) {
         this.nodes.forEach(node => {
-          if (Array.isArray(node.demonstrableSkills)) {
-            node.demonstrableSkills.forEach(skill => {
+          if (Array.isArray(node.classifiedSkills)) {
+            node.classifiedSkills.forEach(skill => {
               if (skill.name.toUpperCase().includes(upperKeyword) && node.id && !result.includes(node.id)) {
+                result.push(node.id);
+              }
+            });
+          }
+          if (Array.isArray(node.skills)) {
+            node.skills.forEach(skill => {
+              if (skill.description.toUpperCase().includes(upperKeyword) && node.id && !result.includes(node.id)) {
                 result.push(node.id);
               }
             });
