@@ -107,7 +107,7 @@ export class SkillsTreeComponent {
     if (node.children && node.children.length > 0) {
       node.children.forEach(child => count += this.countChildren(child));
     }
-    else count += 1;
+    else if (node.leaf) count += 1;
     return count;
   }
 

@@ -2,7 +2,12 @@
     <h3>{{ headline }} [{{ array.length }}]</h3>
     <p-tree [value]="formattedTree()" class="w-full custom-tree ml-0" >
         <ng-template let-node pTemplate="leaf">
-            <div [style.display]="'list-item'" [style.list-style-type]="'disc'"><b>{{node.data}}:</b> {{ node.label }}</div>
+            @if(node.data != '') {
+                <div [style.display]="'list-item'" [style.list-style-type]="'disc'"><b>{{node.data}}:</b> {{ node.label }}</div>
+            }
+            @else {
+                <div [style.display]="'list-item'" [style.list-style-type]="'disc'">{{ node.label }}</div>
+            }
         </ng-template>
         <ng-template let-node pTemplate="default">
             <a (click)="node.expanded = !node.expanded">{{ node.label }} ({{countChildren(node)}})</a>
