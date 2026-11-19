@@ -14,7 +14,8 @@ export class VersionsComponent {
   @Input() bokVersions = new Map<string, number>();
   @Output() bokVersionChange = new EventEmitter<string>();
 
-  readonly descendingOrder = (a: any, b: any) => b.value - a.value;
+  readonly descendingOrder = (a: any, b: any) =>
+    b.key.localeCompare(a.key, undefined, { numeric: true });
 
   loadOldBokVersion(version: string): void {
     this.bokVersionChange.emit(version);
