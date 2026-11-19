@@ -1,7 +1,9 @@
-import {Component, Input, SimpleChanges, WritableSignal, signal} from '@angular/core';
+import {Component, Input, SimpleChanges, WritableSignal, inject, signal} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TreeModule } from 'primeng/tree';
 import { TreeNode } from "primeng/api";
+import { map, Observable, take } from 'rxjs';
+import { BokInformationService } from '@eo4geo/ngx-bok-visualization';
 
 @Component({
   standalone: true,
@@ -11,10 +13,12 @@ import { TreeNode } from "primeng/api";
   imports: [CommonModule, TreeModule],
 })
 export class SkillsTreeComponent {
-  @Input() array: { name: string; bloomLevel: number; bloomVerb: string }[] = [];
+  @Input() array: { name: string; bloomLevel: number; bloomVerb: string, concept: string }[] = [];
   @Input() headline: string = '';
 
   public formattedTree: WritableSignal<TreeNode[]> = signal([])
+
+  private bokInfo: BokInformationService = inject(BokInformationService);
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['array']) {
@@ -70,7 +74,7 @@ export class SkillsTreeComponent {
         }
       ];
 
-      const newArray = changes['array'].currentValue as { name: string; bloomLevel: number; bloomVerb: string }[];
+      const newArray = changes['array'].currentValue as { name: string; bloomLevel: number; bloomVerb: string, concept: string }[];
       newArray.forEach(element => {
         const levelNode = tempTree.at(element.bloomLevel - 1);
         if (!levelNode) return
@@ -82,7 +86,7 @@ export class SkillsTreeComponent {
           leaf: true,
           expanded: false,
           type: 'leaf',
-          data: element.bloomVerb 
+          data: element
         });
       });
 
@@ -129,4 +133,48 @@ export class SkillsTreeComponent {
     return 0;
   }
   
+   divideSkill(value: { name: string; bloomLevel: number; bloomVerb: string, concept: string }): Observable<string[]> {
+    return this.bokInfo.getConceptName(value.concept).pipe(
+      map(conceptName => {
+        const words = value.name.split(' ');
+
+        const verb = words[0];
+
+        const conceptIndex = value.name
+          .toLowerCase()
+          .indexOf(conceptName.toLowerCase());
+        const verbIndex = verb.length;
+
+        const textBeforeConcept = value.name
+          .substring(verbIndex, conceptIndex)
+          .trim();
+
+        const textAfterConcept = value.name
+          .substring(conceptIndex + conceptName.length)
+          .trim();
+
+        return [
+          verb,
+          textBeforeConcept,
+          conceptName,
+          textAfterConcept
+        ];
+      })
+    );
+  }
+
+  getBackgroundColor(code: string) {
+    return this.bokInfo.getConceptColor(code).pipe(take(1), map(
+      color => {
+        if (color) {
+          let hex = color.replace('#', '');
+          const r = parseInt(hex.substring(0, 2), 16);
+          const g = parseInt(hex.substring(2, 4), 16);
+          const b = parseInt(hex.substring(4, 6), 16);
+          return `rgba(${r}, ${g}, ${b}, ${0.5})`;
+        }
+        return ''
+      }
+    ));
+  }
 }

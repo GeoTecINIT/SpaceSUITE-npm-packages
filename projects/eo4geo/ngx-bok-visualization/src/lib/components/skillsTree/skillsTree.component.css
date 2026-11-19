@@ -29,3 +29,12 @@ a {
 a:hover {
   color: var(--hover-color);
 }
+
+.custom-concept-link {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.custom-concept-link:hover {
+  color: white;
+}

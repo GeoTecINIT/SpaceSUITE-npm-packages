@@ -2,8 +2,19 @@
     <h3>{{ headline }} [{{ array.length }}]</h3>
     <p-tree [value]="formattedTree()" class="w-full custom-tree ml-0" >
         <ng-template let-node pTemplate="leaf">
-            @if(node.data != '') {
-                <div [style.display]="'list-item'" [style.list-style-type]="'disc'"><b>{{node.data}}:</b> {{ node.label }}</div>
+            @if(node.data.bloomVerb != '') {
+                @if(divideSkill(node.data) | async; as parts) {
+                    <div [style.display]="'list-item'" [style.list-style-type]="'disc'">
+                        <b>{{parts[0]}}</b>
+                        @if(parts[1] != '') {
+                            <div class="inline ml-1">{{parts[1]}}</div>
+                        }
+                        <a class="custom-concept-link inline border-round-xl mx-1" target="_blank" [href]="'https://geospacebok.eu/' + node.data.concept" [style.background]="getBackgroundColor(node.data.concept) | async">
+                            {{parts[2]}}
+                        </a>
+                        {{parts[3]}}
+                    </div>
+                }
             }
             @else {
                 <div [style.display]="'list-item'" [style.list-style-type]="'disc'">{{ node.label }}</div>
