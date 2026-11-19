@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TreeModule } from 'primeng/tree';
 import { TreeNode } from "primeng/api";
 import { map, Observable, take } from 'rxjs';
-import { BokInformationService } from '@eo4geo/ngx-bok-visualization';
+import { BokInformationService } from '../../services/bok-information.service';
 
 @Component({
   standalone: true,
