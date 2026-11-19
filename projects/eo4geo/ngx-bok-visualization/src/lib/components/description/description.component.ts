@@ -24,18 +24,24 @@ export class DescriptionComponent {
   @Output() codSelectedChange = new EventEmitter<string>();
   @Output() bokVersionChange = new EventEmitter<string>();
 
-  unifiedSkills: WritableSignal<{ name: string; bloomLevel: number; bloomVerb: string }[]> = signal([]);
+  unifiedSkills: WritableSignal<{ name: string; bloomLevel: number; bloomVerb: string; concept: string }[]> = signal([]);
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['bokNode']) {
       const newValue = changes['bokNode'].currentValue as CustomD3Node;
       this.unifiedSkills.set(
         [
-          ...(newValue.classifiedSkills || []),
+          ...(newValue.classifiedSkills || []).map(skill => ({
+            name: skill.name,
+            bloomLevel: skill.bloomLevel,
+            bloomVerb: skill.bloomVerb,
+            concept: newValue.nameShort
+          })),
           ...newValue.skills.map(skill => ({
             name: skill.description,
             bloomLevel: 0,
-            bloomVerb: ''
+            bloomVerb: '',
+            concept: newValue.nameShort
           }))
         ]
       );
